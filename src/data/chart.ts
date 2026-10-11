@@ -148,7 +148,7 @@ const OPEN_SHAPES: Record<string, Pick<ChordShape, 'frets' | 'fingers'>> = {
   Dm7: { frets: [null, null, 0, 2, 1, 1], fingers: [null, null, null, 2, 1, 1] },
   Dmaj7: { frets: [null, null, 0, 2, 2, 2], fingers: [null, null, null, 1, 2, 3] },
   Dsus4: { frets: [null, null, 0, 2, 3, 3], fingers: [null, null, null, 1, 2, 3] },
-  G: { frets: [3, 2, 0, 0, 0, 3], fingers: [2, 1, null, null, null, 3] },
+  G: { frets: [3, 2, 0, 0, 0, 3], fingers: [3, 2, null, null, null, 4] },
   G7: { frets: [3, 2, 0, 0, 0, 1], fingers: [3, 2, null, null, null, 1] },
   Gmaj7: { frets: [3, 2, 0, 0, 0, 2], fingers: [3, 2, null, null, null, 1] },
 };

@@ -11,7 +11,7 @@ export const LEVEL_INFO: Record<Level, { title: string; description: string }> =
 export const CHORDS: Chord[] = [
   // Lv1
   { id: 'C', name: 'C', level: 1, frets: [null, 3, 2, 0, 1, 0], fingers: [null, 3, 2, null, 1, null] },
-  { id: 'G', name: 'G', level: 1, frets: [3, 2, 0, 0, 0, 3], fingers: [2, 1, null, null, null, 3] },
+  { id: 'G', name: 'G', level: 1, frets: [3, 2, 0, 0, 0, 3], fingers: [3, 2, null, null, null, 4] },
   { id: 'D', name: 'D', level: 1, frets: [null, null, 0, 2, 3, 2], fingers: [null, null, null, 1, 3, 2] },
   { id: 'A', name: 'A', level: 1, frets: [null, 0, 2, 2, 2, 0], fingers: [null, null, 1, 2, 3, null] },
   { id: 'E', name: 'E', level: 1, frets: [0, 2, 2, 1, 0, 0], fingers: [null, 2, 3, 1, null, null] },
