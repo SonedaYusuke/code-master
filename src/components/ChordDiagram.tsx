@@ -4,10 +4,12 @@ import { stringNotes } from '../lib/notes';
 const FRET_COUNT = 5;
 const STRING_GAP = 24;
 const FRET_GAP = 28;
-const LEFT = 28;
+/** 左は開始フレット（例: 10fr）を書くので右より広くとる */
+const LEFT = 44;
+const RIGHT = 28;
 const TOP = 36;
 const DOT_RADIUS = 9;
-const WIDTH = LEFT * 2 + STRING_GAP * 5;
+const WIDTH = LEFT + RIGHT + STRING_GAP * 5;
 const BOARD_BOTTOM = TOP + FRET_GAP * FRET_COUNT;
 const HEIGHT = BOARD_BOTTOM + 28;
 
@@ -42,7 +44,7 @@ export default function ChordDiagram({ chord, showNotes }: Props) {
         <line key={`string-${i}`} x1={stringX(i)} x2={stringX(i)} y1={TOP} y2={BOARD_BOTTOM} className="string" />
       ))}
       {baseFret > 1 && (
-        <text x={LEFT - 12} y={fretY(baseFret)} className="base-fret" textAnchor="end" dominantBaseline="middle">
+        <text x={LEFT - 8} y={fretY(baseFret)} className="base-fret" textAnchor="end" dominantBaseline="middle">
           {baseFret}fr
         </text>
       )}
