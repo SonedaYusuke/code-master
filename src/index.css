@@ -258,3 +258,14 @@ a { color: var(--text); }
   .countdown, .combo, .high-score, .points-pop { animation: none; }
   .timer-bar { transition: none; }
 }
+
+/* チャレンジモード */
+.challenge-card { margin-top: 24px; background: var(--yellow); }
+.challenge-card .muted { color: var(--ink); }
+.challenge-card .button { background: var(--surface); }
+.type-picker { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.hearts { display: inline-flex; gap: 2px; font-size: 1.4rem; line-height: 1; }
+.heart { color: var(--red); -webkit-text-stroke: 1.5px var(--ink); }
+.heart.lost { color: transparent; }
+.challenge-result { text-align: center; }
+.challenge-result .actions { justify-content: center; }

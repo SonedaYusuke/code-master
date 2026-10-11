@@ -7,6 +7,7 @@ import Study from './pages/Study';
 import Quiz from './pages/Quiz';
 import Result from './pages/Result';
 import Chart from './pages/Chart';
+import Challenge from './pages/Challenge';
 
 export default function App() {
   const route = useHashRoute();
@@ -30,6 +31,8 @@ export default function App() {
       return <Quiz key={route.level} level={route.level} onFinish={handleFinish} />;
     case 'chart':
       return <Chart />;
+    case 'challenge':
+      return <Challenge />;
     case 'result':
       return <Result level={route.level} result={lastResult} />;
     default:

@@ -3,6 +3,7 @@ import { LEVELS } from '../model';
 import { LEVEL_INFO } from '../data/chords';
 import { loadProgress } from '../lib/progress';
 import { formatRoute } from '../lib/route';
+import { MAX_LIVES, MAX_QUESTIONS } from '../lib/challenge';
 
 export default function Home() {
   const [progress] = useState(() => loadProgress());
@@ -14,6 +15,13 @@ export default function Home() {
       <div className="actions">
         <a className="button secondary" href={formatRoute({ page: 'chart' })}>コード早見表</a>
       </div>
+      <section className="level-card challenge-card">
+        <h2>チャレンジモード</h2>
+        <p className="muted">選んだタイプのコードからランダムに出題。ライフ {MAX_LIVES} つで最大 {MAX_QUESTIONS} 問に挑戦します。</p>
+        <div className="actions">
+          <a className="button" href={formatRoute({ page: 'challenge' })}>挑戦する</a>
+        </div>
+      </section>
       <div className="level-grid">
         {LEVELS.map((level) => {
           const record = progress[level];
