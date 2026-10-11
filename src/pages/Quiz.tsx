@@ -10,6 +10,7 @@ import { formatRoute } from '../lib/route';
 import ChordDiagram from '../components/ChordDiagram';
 import TimerBar from '../components/TimerBar';
 import BuildAnswer from '../components/BuildAnswer';
+import ShapeAnswer from '../components/ShapeAnswer';
 import { useCountdown } from '../hooks/useCountdown';
 import { useQuestionTimer } from '../hooks/useQuestionTimer';
 
@@ -114,8 +115,20 @@ export default function Quiz({ level, mode, onFinish }: Props) {
           </div>
           <div className="combo-row">{combo >= 2 && <span className="combo">{combo} コンボ！</span>}</div>
           <TimerBar remainingMs={remainingMs} timeLimitMs={timeLimitMs} />
-          <ChordDiagram chord={question.answer} showNotes={answered} />
-          {mode === 'choice' ? (
+          {mode === 'shape' ? (
+            <p className="shape-target">{question.answer.name}</p>
+          ) : (
+            <ChordDiagram chord={question.answer} showNotes={answered} />
+          )}
+          {mode === 'shape' ? (
+            <ShapeAnswer
+              choices={question.choices}
+              answerId={question.answer.id}
+              pickedId={answer?.choiceId ?? null}
+              answered={answered}
+              onPick={(id) => resolve(id === question.answer.id, { choiceId: id, pickedType: null })}
+            />
+          ) : mode === 'choice' ? (
             <div className="choices">
               {question.choices.map((choice) => (
                 <button

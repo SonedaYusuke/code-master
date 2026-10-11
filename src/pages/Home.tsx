@@ -8,6 +8,7 @@ import { MAX_LIVES, MAX_QUESTIONS } from '../lib/challenge';
 export default function Home() {
   const [progress] = useState(() => loadProgress());
   const [buildProgress] = useState(() => loadProgress(undefined, 'build'));
+  const [shapeProgress] = useState(() => loadProgress(undefined, 'shape'));
 
   return (
     <main className="page">
@@ -27,6 +28,7 @@ export default function Home() {
         {LEVELS.map((level) => {
           const record = progress[level];
           const buildRecord = buildProgress[level];
+          const shapeRecord = shapeProgress[level];
           return (
             <section key={level} className="level-card">
               <h2>Lv{level} {LEVEL_INFO[level].title}</h2>
@@ -38,10 +40,14 @@ export default function Home() {
               <p>
                 ルート＋タイプ: {buildRecord ? `ハイスコア ${buildRecord.bestPoints.toLocaleString('ja-JP')}pt` : '未挑戦'}
               </p>
+              <p>
+                形を選ぶ: {shapeRecord ? `ハイスコア ${shapeRecord.bestPoints.toLocaleString('ja-JP')}pt` : '未挑戦'}
+              </p>
               <div className="actions">
                 <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習</a>
                 <a className="button" href={formatRoute({ page: 'quiz', level })}>4択</a>
                 <a className="button" href={formatRoute({ page: 'build', level })}>ルート＋タイプ</a>
+                <a className="button" href={formatRoute({ page: 'shape', level })}>形を選ぶ</a>
               </div>
             </section>
           );

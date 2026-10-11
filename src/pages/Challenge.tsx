@@ -1,7 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { Note } from '../model';
 import { CHART_TYPES, CHART_TYPE_LABELS, type ChartType } from '../data/chart';
-import { MAX_LIVES, MAX_QUESTIONS, buildPool, isFinished, nextQuestion, type ChallengeItem } from '../lib/challenge';
+import {
+  MAX_LIVES,
+  MAX_QUESTIONS,
+  buildPool,
+  buildShapeChoices,
+  isFinished,
+  nextQuestion,
+  type ChallengeItem,
+} from '../lib/challenge';
 import { challengeRecordKey, loadChallengeBest, saveChallengeResult, selectionKey } from '../lib/challengeRecord';
 import { buildQuestion } from '../lib/buildQuestion';
 import { MODE_LABELS, type QuizMode } from '../lib/quiz';
@@ -10,6 +18,7 @@ import { formatRoute } from '../lib/route';
 import ChordDiagram from '../components/ChordDiagram';
 import TimerBar from '../components/TimerBar';
 import BuildAnswer from '../components/BuildAnswer';
+import ShapeAnswer from '../components/ShapeAnswer';
 import { useCountdown } from '../hooks/useCountdown';
 import { useQuestionTimer } from '../hooks/useQuestionTimer';
 
@@ -133,7 +142,11 @@ type Answer = { correct: boolean; timedOut: boolean; points: number; choice: str
 function createQuestion(pool: ChallengeItem[], poolTypes: ChartType[], previous: ChallengeItem | null) {
   const question = nextQuestion(pool, previous);
   const { root, type } = question.item;
-  return { ...question, build: buildQuestion({ root, type, preferFlat: false }, poolTypes) };
+  return {
+    ...question,
+    build: buildQuestion({ root, type, preferFlat: false }, poolTypes),
+    shapes: buildShapeChoices(question.item).map((choice) => ({ ...choice.voicing, name: choice.name })),
+  };
 }
 
 function ChallengeGame({ pool, poolTypes, mode, recordKey, onFinish }: GameProps) {
@@ -227,8 +240,20 @@ function ChallengeGame({ pool, poolTypes, mode, recordKey, onFinish }: GameProps
           </div>
           <div className="combo-row">{combo >= 2 && <span className="combo">{combo} コンボ！</span>}</div>
           <TimerBar remainingMs={remainingMs} timeLimitMs={timeLimitMs} />
-          <ChordDiagram chord={question.item.voicing} showNotes={answered} />
-          {mode === 'choice' ? (
+          {mode === 'shape' ? (
+            <p className="shape-target">{question.item.name}</p>
+          ) : (
+            <ChordDiagram chord={question.item.voicing} showNotes={answered} />
+          )}
+          {mode === 'shape' ? (
+            <ShapeAnswer
+              choices={question.shapes}
+              answerId={question.item.voicing.id}
+              pickedId={answer?.choice ?? null}
+              answered={answered}
+              onPick={(id) => resolve(id === question.item.voicing.id, { choice: id, pickedType: null })}
+            />
+          ) : mode === 'choice' ? (
             <div className="choices">
               {question.choices.map((choice) => (
                 <button

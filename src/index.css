@@ -275,3 +275,19 @@ a { color: var(--text); }
 .build-step + .choices { margin-top: 8px; }
 .choice.picked { background: var(--yellow); }
 .mode-toggle { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+/* 形を選ぶモード */
+.shape-target {
+  display: inline-block;
+  margin: 8px 0 4px;
+  padding: 4px 28px;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--yellow);
+  box-shadow: var(--shadow);
+  font-size: 2.4rem;
+  font-weight: 800;
+}
+.shape-choice { padding: 8px 4px; }
+.shape-choice .chord-diagram { max-width: 150px; }
+.shape-choice-name { display: block; font-weight: 800; }

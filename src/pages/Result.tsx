@@ -3,7 +3,7 @@ import type { Level } from '../model';
 import { LEVEL_INFO } from '../data/chords';
 import { CLEAR_THRESHOLD } from '../lib/progress';
 import { MODE_LABELS, type QuizResult } from '../lib/quiz';
-import { formatRoute } from '../lib/route';
+import { formatRoute, quizRoute } from '../lib/route';
 import { navigate } from '../router';
 import ChordCard from '../components/ChordCard';
 
@@ -31,7 +31,7 @@ export default function Result({ level, result }: Props) {
       </p>
       <p>最大コンボ {result.maxCombo}</p>
       <div className="actions">
-        <a className="button" href={formatRoute({ page: result.mode === 'build' ? 'build' : 'quiz', level })}>もう一度</a>
+        <a className="button" href={formatRoute(quizRoute(level, result.mode))}>もう一度</a>
         <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習に戻る</a>
       </div>
       {result.wrong.length > 0 && (

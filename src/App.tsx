@@ -31,6 +31,8 @@ export default function App() {
       return <Quiz key={`${route.level}-choice`} level={route.level} mode="choice" onFinish={handleFinish} />;
     case 'build':
       return <Quiz key={`${route.level}-build`} level={route.level} mode="build" onFinish={handleFinish} />;
+    case 'shape':
+      return <Quiz key={`${route.level}-shape`} level={route.level} mode="shape" onFinish={handleFinish} />;
     case 'chart':
       return <Chart />;
     case 'challenge':
