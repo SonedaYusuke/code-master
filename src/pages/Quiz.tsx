@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Chord, Level, Note } from '../model';
 import type { ChartType } from '../data/chart';
 import { CHORDS, LEVEL_INFO, chordsOfLevel } from '../data/chords';
@@ -15,6 +15,9 @@ import { useCountdown } from '../hooks/useCountdown';
 import { useQuestionTimer } from '../hooks/useQuestionTimer';
 
 type Props = { level: Level; mode: QuizMode; onFinish: (result: QuizResult) => void };
+
+/** 正解したとき、次の問題へ自動で進むまでの待ち時間 */
+const AUTO_NEXT_MS = 800;
 
 /** 回答結果。choiceId / pickedType が null なら時間切れ */
 type Answer = { correct: boolean; timedOut: boolean; points: number; choiceId: string | null; pickedType: ChartType | null };
@@ -44,12 +47,20 @@ export default function Quiz({ level, mode, onFinish }: Props) {
   const question = questions[index];
   const playing = countdown <= 0;
   const answered = answer !== null;
+  const isCorrect = answer?.correct ?? false;
   const { remainingMs, stop } = useQuestionTimer(
     playing && !answered,
     index,
     () => resolve(false, { choiceId: null, pickedType: null }),
     timeLimitMs,
   );
+
+  // 正解したら少し待って自動で次へ
+  useEffect(() => {
+    if (!answered || !isCorrect) return;
+    const timer = setTimeout(next, AUTO_NEXT_MS);
+    return () => clearTimeout(timer);
+  }, [answered, isCorrect]);
 
   function resolve(right: boolean, picks: Pick<Answer, 'choiceId' | 'pickedType'>) {
     if (answered) return;
@@ -154,11 +165,13 @@ export default function Quiz({ level, mode, onFinish }: Props) {
           {answered && (
             <>
               <p className={answer.correct ? 'feedback correct' : 'feedback wrong'}>{feedback()}</p>
-              <div className="actions" style={{ justifyContent: 'center' }}>
-                <button className="button" onClick={next}>
-                  {index + 1 < questions.length ? '次へ' : '結果を見る'}
-                </button>
-              </div>
+              {!isCorrect && (
+                <div className="actions" style={{ justifyContent: 'center' }}>
+                  <button className="button" onClick={next}>
+                    {index + 1 < questions.length ? '次へ' : '結果を見る'}
+                  </button>
+                </div>
+              )}
             </>
           )}
         </>
