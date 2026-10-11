@@ -22,8 +22,13 @@ export default function Result({ level, result }: Props) {
     <main className="page">
       <a className="back" href={formatRoute({ page: 'home' })}>← ホーム</a>
       <h1>Lv{level} {LEVEL_INFO[level].title} の結果</h1>
-      <p className="score">{result.score}%</p>
-      <p>{result.total} 問中 {result.correct} 問正解{result.score >= CLEAR_THRESHOLD && ' — クリア！'}</p>
+      {result.newHighScore && <p className="high-score">ハイスコア更新！</p>}
+      <p className="score">{result.points.toLocaleString('ja-JP')} pt</p>
+      <p>
+        正答率 {result.score}%（{result.total} 問中 {result.correct} 問正解）
+        {result.score >= CLEAR_THRESHOLD && ' — クリア！'}
+      </p>
+      <p>最大コンボ {result.maxCombo}</p>
       <div className="actions">
         <a className="button" href={formatRoute({ page: 'quiz', level })}>もう一度</a>
         <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習に戻る</a>

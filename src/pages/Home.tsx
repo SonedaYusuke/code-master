@@ -22,7 +22,7 @@ export default function Home() {
               <h2>Lv{level} {LEVEL_INFO[level].title}</h2>
               <p className="muted">{LEVEL_INFO[level].description}</p>
               <p>
-                {record ? `最高正答率 ${record.bestScore}%` : '未挑戦'}
+                {record ? `最高正答率 ${record.bestScore}% / ハイスコア ${record.bestPoints.toLocaleString('ja-JP')}pt` : '未挑戦'}
                 {record?.cleared && <span className="badge">クリア済み</span>}
               </p>
               <div className="actions">

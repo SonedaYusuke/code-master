@@ -7,7 +7,11 @@ export type Question = { answer: Chord; choices: Chord[] };
 
 export type QuizResult = {
   level: Level;
+  /** 正答率（%） */
   score: number;
+  points: number;
+  maxCombo: number;
+  newHighScore: boolean;
   correct: number;
   total: number;
   wrong: Chord[];

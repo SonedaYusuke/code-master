@@ -176,3 +176,75 @@ a { color: var(--text); }
 .freq-badge.freq-top, .chip.freq-top.selected { background: var(--red); }
 .freq-badge.freq-common, .chip.freq-common.selected { background: var(--yellow); }
 .root-nav .button:disabled { opacity: 0.35; box-shadow: none; }
+
+/* クイズのゲーム要素 */
+.countdown {
+  display: grid;
+  place-items: center;
+  width: 140px;
+  height: 140px;
+  margin: 48px auto;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: var(--shadow);
+  font-size: 4rem;
+  font-weight: 800;
+  animation: pop 0.4s ease-out;
+}
+.quiz-hud { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+.quiz-points { position: relative; font-size: 1.3rem; font-weight: 800; }
+.points-pop {
+  position: absolute;
+  right: 0;
+  top: -4px;
+  color: var(--pink-text);
+  font-size: 1rem;
+  pointer-events: none;
+  animation: float-up 0.9s ease-out forwards;
+}
+.combo-row { height: 28px; margin-top: 4px; }
+.combo {
+  display: inline-block;
+  padding: 0 12px;
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--red);
+  font-weight: 800;
+  animation: pop 0.3s ease-out;
+}
+.timer {
+  position: relative;
+  height: 22px;
+  margin: 8px 0 12px;
+  overflow: hidden;
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.timer-bar { height: 100%; background: var(--green); transition: width 50ms linear; }
+.timer.danger .timer-bar { background: var(--red); }
+.timer-text { position: absolute; inset: 0; display: grid; place-items: center; font-size: 0.8rem; font-weight: 800; }
+.high-score {
+  display: inline-block;
+  padding: 2px 14px;
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--red);
+  font-weight: 800;
+  animation: pop 0.4s ease-out;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+@keyframes float-up {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-28px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .countdown, .combo, .high-score, .points-pop { animation: none; }
+  .timer-bar { transition: none; }
+}

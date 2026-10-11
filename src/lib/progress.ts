@@ -1,6 +1,6 @@
 import { LEVELS, type Level } from '../model';
 
-export type LevelProgress = { bestScore: number; cleared: boolean };
+export type LevelProgress = { bestScore: number; bestPoints: number; cleared: boolean };
 export type Progress = Partial<Record<Level, LevelProgress>>;
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
 
@@ -15,11 +15,19 @@ function defaultStorage(): StorageLike | null {
   }
 }
 
+const isValidNumber = (value: unknown, max = Infinity): value is number =>
+  typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= max;
+
 function toLevelProgress(value: unknown): LevelProgress | null {
   if (typeof value !== 'object' || value === null) return null;
-  const { bestScore } = value as { bestScore?: unknown };
-  if (typeof bestScore !== 'number' || !Number.isFinite(bestScore) || bestScore < 0 || bestScore > 100) return null;
-  return { bestScore, cleared: bestScore >= CLEAR_THRESHOLD };
+  const { bestScore, bestPoints } = value as { bestScore?: unknown; bestPoints?: unknown };
+  if (!isValidNumber(bestScore, 100)) return null;
+  // ポイント導入前の記録には bestPoints がないので 0 として扱う
+  return {
+    bestScore,
+    bestPoints: isValidNumber(bestPoints) ? bestPoints : 0,
+    cleared: bestScore >= CLEAR_THRESHOLD,
+  };
 }
 
 export function loadProgress(storage: StorageLike | null = defaultStorage()): Progress {
@@ -39,15 +47,27 @@ export function loadProgress(storage: StorageLike | null = defaultStorage()): Pr
   }
 }
 
-export function saveResult(level: Level, score: number, storage: StorageLike | null = defaultStorage()): Progress {
+export function saveResult(
+  level: Level,
+  result: { score: number; points: number },
+  storage: StorageLike | null = defaultStorage(),
+): { progress: Progress; newHighScore: boolean } {
   const current = loadProgress(storage);
-  const best = current[level]?.bestScore;
-  if (best !== undefined && score <= best) return current;
-  const next: Progress = { ...current, [level]: { bestScore: score, cleared: score >= CLEAR_THRESHOLD } };
+  const previous = current[level];
+  const bestScore = Math.max(previous?.bestScore ?? 0, result.score);
+  const bestPoints = Math.max(previous?.bestPoints ?? 0, result.points);
+  const newHighScore = result.points > (previous?.bestPoints ?? 0);
+  if (previous && bestScore === previous.bestScore && bestPoints === previous.bestPoints) {
+    return { progress: current, newHighScore };
+  }
+  const progress: Progress = {
+    ...current,
+    [level]: { bestScore, bestPoints, cleared: bestScore >= CLEAR_THRESHOLD },
+  };
   try {
-    storage?.setItem(STORAGE_KEY, JSON.stringify(next));
+    storage?.setItem(STORAGE_KEY, JSON.stringify(progress));
   } catch {
     // 保存できなくても、今回の結果はそのまま返す
   }
-  return next;
+  return { progress, newHighScore };
 }
