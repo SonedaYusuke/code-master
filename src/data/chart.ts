@@ -44,7 +44,7 @@ function frequencyOf(id: string): Frequency | undefined {
 }
 
 /** コード名の表記がタイプの id と違うもの */
-const NAME_SUFFIX: Partial<Record<ChartType, string>> = { m7b5: 'm7♭5' };
+const NAME_SUFFIX: Partial<Record<ChartType, string>> = { maj7: 'M7', m7b5: 'm7♭5' };
 
 export type VoicingLabel = 'オープン' | '6弦ルート' | '5弦ルート' | '4弦ルート';
 export type Voicing = ChordShape & { label: VoicingLabel };

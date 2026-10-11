@@ -4,7 +4,7 @@ export const LEVEL_INFO: Record<Level, { title: string; description: string }> =
   1: { title: '必須コード', description: 'まず最初に覚えたい基本のコード。F と B のバレーもここで挑戦します。' },
   2: { title: 'オープンの7th', description: '開放弦を使ったセブンスコード。ブルースやポップスでよく登場します。' },
   3: { title: 'バレーコード（基本）', description: '6弦・5弦ルートのバレーで、いろいろなキーのメジャー・マイナーを押さえます。' },
-  4: { title: 'バレーの7th系・sus', description: 'maj7・m7 と sus2 / sus4。響きに色をつけるコードです。' },
+  4: { title: 'バレーの7th系・sus', description: 'M7・m7 と sus2 / sus4。響きに色をつけるコードです。' },
   5: { title: 'テンション・応用', description: 'add9・6・dim・aug・m7♭5・9th。知っておくと表現の幅が広がります。' },
 };
 
@@ -68,8 +68,8 @@ export const CHORDS: Chord[] = [
   },
 
   // Lv4
-  { id: 'Fmaj7', name: 'Fmaj7', level: 4, frets: [null, null, 3, 2, 1, 0], fingers: [null, null, 3, 2, 1, null] },
-  { id: 'Cmaj7', name: 'Cmaj7', level: 4, frets: [null, 3, 2, 0, 0, 0], fingers: [null, 3, 2, null, null, null] },
+  { id: 'Fmaj7', name: 'FM7', level: 4, frets: [null, null, 3, 2, 1, 0], fingers: [null, null, 3, 2, 1, null] },
+  { id: 'Cmaj7', name: 'CM7', level: 4, frets: [null, 3, 2, 0, 0, 0], fingers: [null, 3, 2, null, null, null] },
   {
     id: 'Bm7', name: 'Bm7', level: 4,
     frets: [null, 2, 4, 2, 3, 2], fingers: [null, 1, 3, 1, 2, 1],

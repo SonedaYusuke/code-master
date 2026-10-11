@@ -23,7 +23,8 @@ describe('CHART', () => {
     expect([...CHART_TYPES]).toEqual(['', 'm', '7', 'm7', 'maj7', 'sus4', 'add9', 'm7b5', 'dim', 'dim7', 'aug', '6', 'sus2', '9']);
   });
 
-  it('m7b5 の表示名は ♭ を使う', () => {
+  it('表示名は maj7 を M7、m7b5 を m7♭5 と書く', () => {
+    expect(byId('Cmaj7').name).toBe('CM7');
     expect(byId('Cm7b5').name).toBe('Cm7♭5');
     expect(byId('C#dim7').name).toBe('C#dim7');
   });
