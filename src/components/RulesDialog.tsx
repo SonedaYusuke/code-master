@@ -25,6 +25,7 @@ export default function RulesDialog({ open, onClose }: Props) {
       // 背景（ダイアログの外側）をクリックしたら閉じる
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
+      <button className="dialog-close" aria-label="閉じる" onClick={onClose}>×</button>
       <div className="mode-dialog-body rules">
         <h2 id="rules-dialog-title">遊び方</h2>
         <h3>点数</h3>
@@ -46,9 +47,6 @@ export default function RulesDialog({ open, onClose }: Props) {
           <li>ライフがなくなるか、{MAX_QUESTIONS} 問答えたら終了</li>
           <li>ハイスコアは選んだコードと答え方の組み合わせごとに記録</li>
         </ul>
-        <div className="actions" style={{ justifyContent: 'flex-end' }}>
-          <button className="button secondary" onClick={onClose}>閉じる</button>
-        </div>
       </div>
     </dialog>
   );

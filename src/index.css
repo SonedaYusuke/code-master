@@ -271,9 +271,29 @@ a { color: var(--text); }
   background: var(--surface);
   color: var(--text);
   box-shadow: var(--shadow);
+  /* 閉じるボタンを右上の角からはみ出させる */
+  overflow: visible;
 }
 .mode-dialog::backdrop { background: rgba(26, 26, 26, 0.45); }
 .mode-dialog-body { padding: 20px; }
+.dialog-close {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+.dialog-close:hover { background: var(--yellow); }
 .mode-options { display: grid; gap: 12px; margin-top: 16px; }
 .mode-option {
   display: grid;

@@ -38,6 +38,7 @@ export default function QuizModeDialog({ level, onClose }: Props) {
       // 背景（ダイアログの外側）をクリックしたら閉じる
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
+      <button className="dialog-close" aria-label="閉じる" onClick={onClose}>×</button>
       {level !== null && (
         <div className="mode-dialog-body">
           <h2 id="mode-dialog-title">Lv{level} {LEVEL_INFO[level].title}</h2>
@@ -55,9 +56,6 @@ export default function QuizModeDialog({ level, onClose }: Props) {
                 </a>
               );
             })}
-          </div>
-          <div className="actions" style={{ justifyContent: 'flex-end' }}>
-            <button className="button secondary" onClick={onClose}>閉じる</button>
           </div>
         </div>
       )}
