@@ -104,7 +104,8 @@ export default function Quiz({ level, mode, onFinish }: Props) {
 
   function feedback(): string {
     if (answer!.correct) return `正解！ +${answer!.points}pt`;
-    return `${answer!.timedOut ? '時間切れ' : '不正解'}… 正解は ${question.answer.name}`;
+    const name = question.answer.simplified ? `${question.answer.name}（省略形）` : question.answer.name;
+    return `${answer!.timedOut ? '時間切れ' : '不正解'}… 正解は ${name}`;
   }
 
   return (
