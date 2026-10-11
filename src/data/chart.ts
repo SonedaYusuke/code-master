@@ -26,7 +26,7 @@ export type Frequency = 'top' | 'common';
 
 export const FREQUENCY_LABELS: Record<Frequency, string> = { top: '超頻出', common: '頻出' };
 
-/** ポップス・ロックでの登場頻度。ここにないコードはラベルなし */
+/** ポップス・ロックでの登場頻度。形ごとのラベルは voicingFrequency で決める */
 export const FREQUENCIES: Record<Frequency, readonly string[]> = {
   top: ['C', 'D', 'E', 'F', 'G', 'A', 'A#', 'Am', 'Bm', 'Dm', 'Em', 'G7', 'E7', 'Cmaj7'],
   common: [
@@ -47,15 +47,8 @@ function frequencyOf(id: string): Frequency | undefined {
 const NAME_SUFFIX: Partial<Record<ChartType, string>> = { maj7: 'M7', m7b5: 'm7♭5' };
 
 export type VoicingLabel = 'オープン' | '6弦ルート' | '5弦ルート' | '4弦ルート';
-export type Voicing = ChordShape & { label: VoicingLabel };
-export type ChartChord = {
-  id: string;
-  name: string;
-  type: ChartType;
-  frequency?: Frequency;
-  tones: Note[];
-  voicings: Voicing[];
-};
+export type Voicing = ChordShape & { label: VoicingLabel; frequency?: Frequency };
+export type ChartChord = { id: string; name: string; type: ChartType; tones: Note[]; voicings: Voicing[] };
 export type ChartSection = { root: Note; chords: ChartChord[] };
 
 /** ルートを 0 フレットとしたときの相対フレット（ルートより低いフレットは負の値）。指 1 が人差し指のセーハ */
@@ -187,6 +180,21 @@ function position(voicing: Voicing): number {
   return Math.min(...voicing.frets.filter((f): f is number => f !== null && f > 0));
 }
 
+/** 超頻出コードの、一番低い形以外で頻出とする6弦・5弦ルートの形の上限フレット */
+const COMMON_ALTERNATIVE_MAX_FRET = 7;
+
+/**
+ * 形ごとの頻出度。一番低い形はコードの頻出度をそのまま使い、
+ * 超頻出コードはさらに7フレット以内の6弦・5弦ルートの形を頻出にする
+ */
+function voicingFrequency(chordFrequency: Frequency | undefined, voicing: Voicing, index: number): Frequency | undefined {
+  if (!chordFrequency) return undefined;
+  if (index === 0) return chordFrequency;
+  const isBarre = voicing.label === '6弦ルート' || voicing.label === '5弦ルート';
+  if (chordFrequency === 'top' && isBarre && position(voicing) <= COMMON_ALTERNATIVE_MAX_FRET) return 'common';
+  return undefined;
+}
+
 function buildChord(root: Note, type: ChartType): ChartChord {
   const id = `${root}${type}`;
   const name = `${root}${NAME_SUFFIX[type] ?? type}`;
@@ -203,6 +211,7 @@ function buildChord(root: Note, type: ChartType): ChartChord {
   }
 
   const seen = new Set<string>();
+  const chordFrequency = frequencyOf(id);
   const voicings = candidates
     .filter((v) => {
       const key = JSON.stringify(v.frets);
@@ -210,17 +219,13 @@ function buildChord(root: Note, type: ChartType): ChartChord {
       seen.add(key);
       return true;
     })
-    .sort((a, b) => position(a) - position(b));
+    .sort((a, b) => position(a) - position(b))
+    .map((voicing, index) => {
+      const frequency = voicingFrequency(chordFrequency, voicing, index);
+      return frequency ? { ...voicing, frequency } : voicing;
+    });
 
-  const frequency = frequencyOf(id);
-  return {
-    id,
-    name,
-    type,
-    ...(frequency && { frequency }),
-    tones: sortFromRoot(root, voicings.flatMap(chordTones)),
-    voicings,
-  };
+  return { id, name, type, tones: sortFromRoot(root, voicings.flatMap(chordTones)), voicings };
 }
 
 export const CHART: ChartSection[] = NOTES.map((root) => ({

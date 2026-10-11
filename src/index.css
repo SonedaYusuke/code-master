@@ -161,7 +161,17 @@ a { color: var(--text); }
 .chart-chord-head h3 { margin: 0; font-size: 1.3rem; }
 .voicings { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 8px; }
 .voicing { margin: 0; text-align: center; }
-.voicing figcaption { color: var(--muted); font-size: 0.85rem; font-weight: 700; }
+.voicing figcaption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px 6px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+.voicing .freq-badge { color: var(--ink); font-size: 0.72rem; padding: 0 8px; }
 
 .filter-divider { width: 2px; align-self: stretch; margin: 2px 4px; background: var(--ink); border-radius: 1px; }
 .freq-badge {

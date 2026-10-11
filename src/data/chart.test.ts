@@ -84,10 +84,24 @@ describe('CHART', () => {
     expect(new Set(listed).size).toBe(listed.length);
   });
 
-  it('コードに頻出度が付く', () => {
-    expect(byId('C').frequency).toBe('top');
-    expect(byId('F#m').frequency).toBe('common');
-    expect(byId('Cdim').frequency).toBeUndefined();
+  it('超頻出コードは一番低い形が超頻出、7フレット以内の6弦・5弦ルートの形が頻出', () => {
+    expect(voicing('C', 'オープン')!.frequency).toBe('top');
+    expect(voicing('C', '5弦ルート')!.frequency).toBe('common');
+    expect(voicing('C', '6弦ルート')!.frequency).toBeUndefined(); // 8フレット
+    expect(voicing('C', '4弦ルート')!.frequency).toBeUndefined();
+    expect(voicing('G', '6弦ルート')!.frequency).toBe('common');
+    expect(voicing('F', '6弦ルート')!.frequency).toBe('top');
+    expect(voicing('Bm', '5弦ルート')!.frequency).toBe('top');
+    expect(voicing('A#', '5弦ルート')!.frequency).toBe('top');
+  });
+
+  it('頻出コードは一番低い形だけが頻出', () => {
+    expect(byId('F#m').voicings.map((v) => v.frequency)).toEqual(['common', undefined, undefined]);
+    expect(voicing('Cadd9', 'オープン')!.frequency).toBe('common');
+  });
+
+  it('一覧にないコードの形にはラベルを付けない', () => {
+    expect(byId('Cdim').voicings.every((v) => v.frequency === undefined)).toBe(true);
   });
 
   describe.each(allChords)('$id', (chord) => {
@@ -100,6 +114,10 @@ describe('CHART', () => {
       if (!chord.id.endsWith('add9')) expect(strings).toContain(4);
       const keys = chord.voicings.map((v) => JSON.stringify(v.frets));
       expect(new Set(keys).size).toBe(keys.length);
+    });
+
+    it('超頻出の形は最大1つ', () => {
+      expect(chord.voicings.filter((v) => v.frequency === 'top').length).toBeLessThanOrEqual(1);
     });
 
     it('低いポジション順に並んでいる', () => {

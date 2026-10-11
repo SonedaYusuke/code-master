@@ -29,6 +29,16 @@ describe('filterChart', () => {
     expect(ids([], ['top', 'common'])).toHaveLength(14 + 28);
   });
 
+  it('頻出度で絞り込むと、当てはまる形だけを残す', () => {
+    const chords = (frequencies: Frequency[]) =>
+      filterChart(CHART, { types: new Set(), frequencies: new Set(frequencies) }).flatMap((s) => s.chords);
+    const labelsOf = (frequencies: Frequency[], id: string) =>
+      chords(frequencies).find((c) => c.id === id)?.voicings.map((v) => v.label);
+    expect(labelsOf(['top'], 'C')).toEqual(['オープン']);
+    expect(labelsOf(['common'], 'C')).toEqual(['5弦ルート']);
+    expect(labelsOf(['top', 'common'], 'C')).toEqual(['オープン', '5弦ルート']);
+  });
+
   it('タイプと頻出度は両方を満たすコードを返す（AND）', () => {
     expect(ids(['m7'], ['common'])).toEqual(['Dm7', 'Em7', 'F#m7', 'Am7', 'Bm7']);
   });

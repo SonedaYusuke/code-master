@@ -93,16 +93,18 @@ export default function Chart() {
             <section key={chord.id} className="chart-chord">
               <div className="chart-chord-head">
                 <h3>{chord.name}</h3>
-                {chord.frequency && (
-                  <span className={`freq-badge freq-${chord.frequency}`}>{FREQUENCY_LABELS[chord.frequency]}</span>
-                )}
                 <p className="muted">構成音: {chord.tones.join('・')}</p>
               </div>
               <div className="voicings">
                 {chord.voicings.map((voicing) => (
                   <figure key={voicing.id} className="voicing">
                     <ChordDiagram chord={voicing} showNotes />
-                    <figcaption>{voicing.label}</figcaption>
+                    <figcaption>
+                      {voicing.label}
+                      {voicing.frequency && (
+                        <span className={`freq-badge freq-${voicing.frequency}`}>{FREQUENCY_LABELS[voicing.frequency]}</span>
+                      )}
+                    </figcaption>
                   </figure>
                 ))}
               </div>
