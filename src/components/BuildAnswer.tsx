@@ -38,7 +38,7 @@ export default function BuildAnswer({ question, pickedRoot, pickedType, answered
           </button>
         ))}
       </div>
-      <p className="build-step">② タイプ</p>
+      <p className="build-step">② コード</p>
       <div className="choices">
         {question.typeChoices.map((type) => (
           <button

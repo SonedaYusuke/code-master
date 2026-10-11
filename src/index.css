@@ -271,9 +271,29 @@ a { color: var(--text); }
   background: var(--surface);
   color: var(--text);
   box-shadow: var(--shadow);
+  /* 閉じるボタンを右上の角からはみ出させる */
+  overflow: visible;
 }
 .mode-dialog::backdrop { background: rgba(26, 26, 26, 0.45); }
 .mode-dialog-body { padding: 20px; }
+.dialog-close {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+.dialog-close:hover { background: var(--yellow); }
 .mode-options { display: grid; gap: 12px; margin-top: 16px; }
 .mode-option {
   display: grid;
@@ -290,7 +310,32 @@ a { color: var(--text); }
 .mode-option:hover { transform: translate(1px, 1px); background: var(--yellow); }
 .mode-option:active { transform: translate(4px, 4px); box-shadow: none; }
 .mode-option-title { font-size: 1.1rem; font-weight: 800; }
-.mode-option-record { font-size: 0.85rem; font-weight: 700; }
+.mode-option-record { display: flex; justify-content: space-between; gap: 8px; font-size: 0.85rem; font-weight: 700; }
+.mode-option-rank { color: var(--pink-text); font-weight: 800; }
+
+/* 遊び方 */
+.help-button {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 48px;
+  height: 48px;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font-size: 1.4rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+.help-button:hover { transform: translate(1px, 1px); }
+.help-button:active { transform: translate(4px, 4px); box-shadow: none; }
+.rules { max-height: calc(100dvh - 64px); overflow-y: auto; }
+.rules h3 { margin: 16px 0 4px; }
+.rules ul { margin: 4px 0; padding-left: 1.2em; }
+.rules li { margin: 2px 0; }
 
 /* 結果画面 */
 .result-card {
@@ -315,7 +360,7 @@ a { color: var(--text); }
   font-weight: 800;
 }
 .result-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
-.high-score, .achievement {
+.high-score {
   padding: 2px 14px;
   border: var(--border);
   border-radius: 999px;
@@ -323,9 +368,10 @@ a { color: var(--text); }
   animation: pop 0.4s ease-out;
 }
 .high-score { background: var(--red); }
-.achievement { background: var(--green); }
 .result-points { margin: 8px 0 4px; font-size: 3.4rem; font-weight: 800; line-height: 1.1; }
 .result-points-unit { margin-left: 6px; font-size: 1.4rem; }
+.result-rank { margin: 0; font-weight: 700; }
+.result-rank strong { font-size: 1.3rem; font-weight: 800; color: var(--pink-text); }
 /* タイルの数に合わせて等分する */
 .result-stats { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 10px; margin: 16px 0 0; }
 .result-stat {
@@ -338,5 +384,5 @@ a { color: var(--text); }
 .result-stat dd { margin: 2px 0 0; font-size: 1.4rem; font-weight: 800; }
 .result-actions { justify-content: center; margin-top: 20px; }
 @media (prefers-reduced-motion: reduce) {
-  .high-score, .achievement { animation: none; }
+  .high-score { animation: none; }
 }

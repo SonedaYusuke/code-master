@@ -45,10 +45,10 @@ function shuffle<T>(items: readonly T[], rng: () => number): T[] {
   return result;
 }
 
-/** 同じタイプでルート違い、または同じルートでタイプ違いのコード名を混ぜる */
-function buildChoices(item: ChallengeItem, rng: () => number): string[] {
+/** 選んだタイプのコードのうち、同じタイプでルート違い、または同じルートでタイプ違いのコード名を混ぜる */
+function buildChoices(item: ChallengeItem, types: ReadonlySet<ChartType>, rng: () => number): string[] {
   const related = ALL_CHORDS.filter(
-    (chord) => chord.id !== item.chordId && (chord.type === item.type || chord.root === item.root),
+    (chord) => chord.id !== item.chordId && types.has(chord.type) && (chord.type === item.type || chord.root === item.root),
   );
   const names = new Set([item.name]);
   for (const chord of shuffle(related, rng)) {
@@ -59,14 +59,18 @@ function buildChoices(item: ChallengeItem, rng: () => number): string[] {
 }
 
 /**
- * 「形を選ぶ」の選択肢。同じタイプでルート違い（同じ形で位置違い）か、同じルートでタイプ違いの形を混ぜる。
+ * 「形を選ぶ」の選択肢。選んだタイプのコードのうち、同じタイプでルート違い（同じ形で位置違い）か、同じルートでタイプ違いの形を混ぜる。
  * 同じ名前の別の押さえ方はどちらも正解になってしまうので入れない
  */
-export function buildShapeChoices(item: ChallengeItem, rng: () => number = Math.random): ChallengeItem[] {
+export function buildShapeChoices(
+  item: ChallengeItem,
+  types: ReadonlySet<ChartType>,
+  rng: () => number = Math.random,
+): ChallengeItem[] {
   const choices = [item];
   const usedFrets = new Set([JSON.stringify(item.voicing.frets)]);
   const related = ALL_CHORDS.filter(
-    (chord) => chord.name !== item.name && (chord.type === item.type || chord.root === item.root),
+    (chord) => chord.name !== item.name && types.has(chord.type) && (chord.type === item.type || chord.root === item.root),
   );
   for (const chord of shuffle(related, rng)) {
     if (choices.length === CHOICE_COUNT) break;
@@ -80,7 +84,7 @@ export function buildShapeChoices(item: ChallengeItem, rng: () => number = Math.
   return shuffle(choices, rng);
 }
 
-/** 前の問題と同じ形は避けて、ランダムに1問作る */
+/** 前の問題と同じ形は避けて、ランダムに1問作る。選択肢は出題する形のタイプから作る */
 export function nextQuestion(
   pool: readonly ChallengeItem[],
   previous: ChallengeItem | null,
@@ -89,7 +93,8 @@ export function nextQuestion(
   if (pool.length === 0) throw new Error('出題できる形がありません');
   const candidates = pool.length > 1 && previous ? pool.filter((item) => item.voicing.id !== previous.voicing.id) : pool;
   const item = candidates[Math.floor(rng() * candidates.length)];
-  return { item, choices: buildChoices(item, rng) };
+  const types = new Set(pool.map((candidate) => candidate.type));
+  return { item, choices: buildChoices(item, types, rng) };
 }
 
 /** answered は回答済みの問題数 */

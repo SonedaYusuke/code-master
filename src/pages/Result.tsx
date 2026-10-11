@@ -1,24 +1,19 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { Level } from '../model';
 import { LEVEL_INFO } from '../data/chords';
-import { CLEAR_THRESHOLD } from '../lib/progress';
 import { MODE_LABELS, type QuizResult } from '../lib/quiz';
-import { formatRoute, quizRoute } from '../lib/route';
+import { maxPointsFor } from '../lib/scoring';
+import { formatRoute } from '../lib/route';
 import { navigate } from '../router';
 import ChordCard from '../components/ChordCard';
+import QuizModeDialog from '../components/QuizModeDialog';
 import ResultSummary from '../components/ResultSummary';
 
 type Props = { level: Level; result: QuizResult | null };
 
-/** 全問正解ならパーフェクト、クリア条件（正答率80%）を満たせばクリア */
-function achievementOf(result: QuizResult): string | undefined {
-  if (result.correct === result.total) return 'パーフェクト！';
-  if (result.score >= CLEAR_THRESHOLD) return 'クリア！';
-  return undefined;
-}
-
 export default function Result({ level, result }: Props) {
   const valid = result !== null && result.level === level;
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!valid) navigate({ page: 'quiz', level }, true);
@@ -35,15 +30,15 @@ export default function Result({ level, result }: Props) {
         description={LEVEL_INFO[level].description}
         heading={MODE_LABELS[result.mode]}
         points={result.points}
+        maxPoints={maxPointsFor(result.total)}
         newHighScore={result.newHighScore}
-        achievement={achievementOf(result)}
         stats={[
           { label: '正解', value: `${result.correct} / ${result.total}` },
           { label: '最大コンボ', value: `${result.maxCombo}` },
         ]}
         actions={
           <>
-            <a className="button" href={formatRoute(quizRoute(level, result.mode))}>もう一度</a>
+            <button className="button" onClick={() => setDialogOpen(true)}>もう一度</button>
             <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習に戻る</a>
           </>
         }
@@ -58,6 +53,7 @@ export default function Result({ level, result }: Props) {
           </div>
         </>
       )}
+      <QuizModeDialog level={dialogOpen ? level : null} onClose={() => setDialogOpen(false)} />
     </main>
   );
 }

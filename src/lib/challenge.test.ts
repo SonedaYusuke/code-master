@@ -73,6 +73,15 @@ describe('nextQuestion', () => {
     }
   });
 
+  it('不正解の選択肢は、選んだタイプのコードだけから出す', () => {
+    const items = pool(['m', 'maj7']);
+    const allowed = new Set(items.map((item) => item.name));
+    const rng = seededRng(7);
+    for (let i = 0; i < 200; i++) {
+      for (const name of nextQuestion(items, null, rng).choices) expect(allowed.has(name)).toBe(true);
+    }
+  });
+
   it('同じ形を2問続けて出さない', () => {
     const items = pool(['']);
     const rng = seededRng(3);
@@ -100,7 +109,7 @@ describe('buildShapeChoices', () => {
     const rng = seededRng(5);
     for (let i = 0; i < 100; i++) {
       const item = nextQuestion(items, null, rng).item;
-      const choices = buildShapeChoices(item, rng);
+      const choices = buildShapeChoices(item, new Set(['', 'm', '7', 'm7']), rng);
       expect(choices).toHaveLength(4);
       expect(choices.filter((c) => c.voicing.id === item.voicing.id)).toHaveLength(1);
       expect(new Set(choices.map((c) => c.name)).size).toBe(4);
@@ -114,10 +123,20 @@ describe('buildShapeChoices', () => {
     const rng = seededRng(6);
     for (let i = 0; i < 100; i++) {
       const item = nextQuestion(items, null, rng).item;
-      for (const choice of buildShapeChoices(item, rng)) {
+      for (const choice of buildShapeChoices(item, new Set(['m7', 'maj7']), rng)) {
         expect(choice.type === item.type || choice.root === item.root).toBe(true);
         expect(allPlayable.has(choice.voicing.id)).toBe(true);
       }
+    }
+  });
+
+  it('不正解の形は、選んだタイプのコードだけから出す', () => {
+    const types = new Set<ChartType>(['m', 'm7', 'maj7']);
+    const items = buildPool(types);
+    const rng = seededRng(8);
+    for (let i = 0; i < 200; i++) {
+      const item = nextQuestion(items, null, rng).item;
+      for (const choice of buildShapeChoices(item, types, rng)) expect(types.has(choice.type)).toBe(true);
     }
   });
 });

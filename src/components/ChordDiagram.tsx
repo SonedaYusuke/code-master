@@ -44,7 +44,7 @@ export default function ChordDiagram({ chord, showNotes }: Props) {
         <line key={`string-${i}`} x1={stringX(i)} x2={stringX(i)} y1={TOP} y2={BOARD_BOTTOM} className="string" />
       ))}
       {baseFret > 1 && (
-        <text x={LEFT - 8} y={fretY(baseFret)} className="base-fret" textAnchor="end" dominantBaseline="middle">
+        <text x={LEFT - DOT_RADIUS - 4} y={fretY(baseFret)} className="base-fret" textAnchor="end" dominantBaseline="middle">
           {baseFret}fr
         </text>
       )}

@@ -6,7 +6,7 @@ export const CHOICE_COUNT = 4;
 /** choice: コード名の4択 / build: ルート4択 → タイプ4択 / shape: コード名から形の4択 */
 export type QuizMode = 'choice' | 'build' | 'shape';
 
-export const MODE_LABELS: Record<QuizMode, string> = { choice: '4択', build: 'ルート＋タイプ', shape: '形を選ぶ' };
+export const MODE_LABELS: Record<QuizMode, string> = { choice: '4択', build: 'ルート＋コード', shape: '形を選ぶ' };
 
 export type Question = { answer: Chord; choices: Chord[] };
 

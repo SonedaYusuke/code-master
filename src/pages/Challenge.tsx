@@ -13,7 +13,7 @@ import {
 import { challengeRecordKey, loadChallengeBest, saveChallengeResult, selectionKey } from '../lib/challengeRecord';
 import { buildQuestion } from '../lib/buildQuestion';
 import { MODE_LABELS, type QuizMode } from '../lib/quiz';
-import { pointsFor, timeLimitFor } from '../lib/scoring';
+import { maxPointsFor, pointsFor, timeLimitFor } from '../lib/scoring';
 import { formatRoute } from '../lib/route';
 import ChordDiagram from '../components/ChordDiagram';
 import TimerBar from '../components/TimerBar';
@@ -77,11 +77,11 @@ export default function Challenge() {
       {phase === 'result' && summary ? (
         <ResultSummary
           title="チャレンジモード"
-          description={`${MODE_LABELS[mode]} / 出題タイプ: ${selectionKey(types)}`}
-          heading={summary.completed ? 'クリア' : 'ゲームオーバー'}
+          description={`${MODE_LABELS[mode]} / 出題コード: ${selectionKey(types)}`}
+          heading={summary.completed ? '完走' : 'ゲームオーバー'}
           points={summary.points}
+          maxPoints={maxPointsFor(MAX_QUESTIONS)}
           newHighScore={summary.newHighScore}
-          achievement={summary.completed ? `${MAX_QUESTIONS}問完走！` : undefined}
           stats={[
             { label: '正解', value: `${summary.correct} / ${summary.answered}` },
             { label: '最大コンボ', value: `${summary.maxCombo}` },
@@ -90,25 +90,25 @@ export default function Challenge() {
           actions={
             <>
               <button className="button" onClick={start}>もう一度</button>
-              <button className="button secondary" onClick={() => setPhase('setup')}>タイプを選び直す</button>
+              <button className="button secondary" onClick={() => setPhase('setup')}>コードを選び直す</button>
             </>
           }
         />
       ) : (
         <section>
           <p className="muted">
-            選んだタイプのコードからランダムに出題します。ライフは {MAX_LIVES} つで、不正解か時間切れで1つ減ります。最大 {MAX_QUESTIONS} 問。
+            選んだコードからランダムに出題します。ライフは {MAX_LIVES} つで、不正解か時間切れで1つ減ります。最大 {MAX_QUESTIONS} 問。
           </p>
           <h2 style={{ marginTop: 20 }}>答え方</h2>
           <div className="mode-toggle" role="group" aria-label="答え方">
             {(Object.keys(MODE_LABELS) as QuizMode[]).map((m) => (
               <button key={m} className={mode === m ? 'chip selected' : 'chip'} aria-pressed={mode === m} onClick={() => setMode(m)}>
-                {MODE_LABELS[m]}（{timeLimitFor(m) / 1000}秒）
+                {MODE_LABELS[m]}
               </button>
             ))}
           </div>
-          <h2 style={{ marginTop: 20 }}>出題するタイプ</h2>
-          <div className="type-picker" role="group" aria-label="出題するタイプ">
+          <h2 style={{ marginTop: 20 }}>出題するコード</h2>
+          <div className="type-picker" role="group" aria-label="出題するコード">
             {CHART_TYPES.map((type) => (
               <button
                 key={type}
@@ -154,7 +154,7 @@ function createQuestion(pool: ChallengeItem[], poolTypes: ChartType[], previous:
   return {
     ...question,
     build: buildQuestion({ root, type, preferFlat: false }, poolTypes),
-    shapes: buildShapeChoices(question.item).map((choice) => ({ ...choice.voicing, name: choice.name })),
+    shapes: buildShapeChoices(question.item, new Set(poolTypes)).map((choice) => ({ ...choice.voicing, name: choice.name })),
   };
 }
 

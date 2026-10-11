@@ -1,7 +1,7 @@
 import { LEVELS, type Level } from '../model';
 import type { QuizMode } from './quiz';
 
-export type LevelProgress = { bestScore: number; bestPoints: number; cleared: boolean };
+export type LevelProgress = { bestScore: number; bestPoints: number };
 export type Progress = Partial<Record<Level, LevelProgress>>;
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
 
@@ -14,7 +14,6 @@ const MODE_STORAGE_KEYS: Record<QuizMode, string> = {
 };
 
 const keyFor = (mode: QuizMode) => MODE_STORAGE_KEYS[mode];
-export const CLEAR_THRESHOLD = 80;
 
 function defaultStorage(): StorageLike | null {
   try {
@@ -32,11 +31,7 @@ function toLevelProgress(value: unknown): LevelProgress | null {
   const { bestScore, bestPoints } = value as { bestScore?: unknown; bestPoints?: unknown };
   if (!isValidNumber(bestScore, 100)) return null;
   // ポイント導入前の記録には bestPoints がないので 0 として扱う
-  return {
-    bestScore,
-    bestPoints: isValidNumber(bestPoints) ? bestPoints : 0,
-    cleared: bestScore >= CLEAR_THRESHOLD,
-  };
+  return { bestScore, bestPoints: isValidNumber(bestPoints) ? bestPoints : 0 };
 }
 
 export function loadProgress(storage: StorageLike | null = defaultStorage(), mode: QuizMode = 'choice'): Progress {
@@ -72,7 +67,7 @@ export function saveResult(
   }
   const progress: Progress = {
     ...current,
-    [level]: { bestScore, bestPoints, cleared: bestScore >= CLEAR_THRESHOLD },
+    [level]: { bestScore, bestPoints },
   };
   try {
     storage?.setItem(keyFor(mode), JSON.stringify(progress));
