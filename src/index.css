@@ -7,9 +7,7 @@
   --yellow: #ffd23f;
   --pink: #ff5fa2;
   --pink-text: #e0367f;
-  --blue: #3db2ff;
   --green: #3ddc97;
-  --purple: #a78bfa;
   --red: #ff5c5c;
   --border: 2px solid var(--ink);
   --radius: 14px;
@@ -69,14 +67,6 @@ a { color: var(--text); }
   padding: 16px;
 }
 .chord-card { text-align: center; }
-
-/* レベルカードは上部の帯の色で見分ける */
-.level-card { --band: var(--yellow); border-top: 14px solid var(--band); }
-.level-card.lv-1 { --band: var(--yellow); }
-.level-card.lv-2 { --band: var(--pink); }
-.level-card.lv-3 { --band: var(--blue); }
-.level-card.lv-4 { --band: var(--green); }
-.level-card.lv-5 { --band: var(--purple); }
 
 .badge {
   display: inline-block;

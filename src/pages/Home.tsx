@@ -18,7 +18,7 @@ export default function Home() {
         {LEVELS.map((level) => {
           const record = progress[level];
           return (
-            <section key={level} className={`level-card lv-${level}`}>
+            <section key={level} className="level-card">
               <h2>Lv{level} {LEVEL_INFO[level].title}</h2>
               <p className="muted">{LEVEL_INFO[level].description}</p>
               <p>
