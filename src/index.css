@@ -224,7 +224,6 @@ a { color: var(--text); }
 }
 .timer-bar { height: 100%; background: var(--green); transition: width 50ms linear; }
 .timer.danger .timer-bar { background: var(--red); }
-.timer-text { position: absolute; inset: 0; display: grid; place-items: center; font-size: 0.8rem; font-weight: 800; }
 .high-score {
   display: inline-block;
   padding: 2px 14px;

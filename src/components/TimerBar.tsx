@@ -13,7 +13,6 @@ export default function TimerBar({ remainingMs, timeLimitMs = TIME_LIMIT_MS }: {
       aria-valuenow={Math.ceil(remainingMs / 1000)}
     >
       <div className="timer-bar" style={{ width: `${(remainingMs / timeLimitMs) * 100}%` }} />
-      <span className="timer-text">{(remainingMs / 1000).toFixed(1)}秒</span>
     </div>
   );
 }
