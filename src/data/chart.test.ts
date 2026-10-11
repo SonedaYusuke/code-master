@@ -111,6 +111,13 @@ describe('CHART', () => {
     }
   });
 
+  it('形の id はコードの中で重ならない', () => {
+    expect(byId('Bm7').voicings.filter((v) => v.label === '省略形').map((v) => v.id)).toEqual(['Bm7@省略形', 'Bm7@省略形2']);
+    for (const { chords } of CHART) {
+      for (const chord of chords) expect(new Set(chord.voicings.map((v) => v.id)).size).toBe(chord.voicings.length);
+    }
+  });
+
   it('頻出コードは一番低い形と省略形が頻出', () => {
     expect(byId('F#m').voicings.map((v) => v.frequency)).toEqual(['common', 'common', undefined, undefined]);
     expect(voicing('Cadd9', 'オープン')!.frequency).toBe('common');

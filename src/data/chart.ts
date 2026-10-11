@@ -251,9 +251,12 @@ function buildChord(root: Note, type: ChartType): ChartChord {
       return true;
     })
     .sort((a, b) => position(a) - position(b))
-    .map((voicing, index) => {
-      const frequency = voicingFrequency(chordFrequency, voicing, index);
-      return frequency ? { ...voicing, frequency } : voicing;
+    .map((voicing, index, sorted) => {
+      // 同じラベルの形が複数ある（例: Bm7 の省略形2つ）と id が重なるので、2つ目以降に番号を付ける
+      const sameLabelIndex = sorted.slice(0, index).filter((v) => v.label === voicing.label).length;
+      const unique = sameLabelIndex === 0 ? voicing : { ...voicing, id: `${voicing.id}${sameLabelIndex + 1}` };
+      const frequency = voicingFrequency(chordFrequency, unique, index);
+      return frequency ? { ...unique, frequency } : unique;
     });
 
   return { id, name, type, tones: sortFromRoot(root, voicings.flatMap(chordTones)), voicings };
