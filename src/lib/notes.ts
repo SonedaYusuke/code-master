@@ -1,4 +1,4 @@
-import { NOTES, type Chord, type Note } from '../model';
+import { NOTES, type ChordShape as Chord, type Note } from '../model';
 
 const OPEN_STRINGS: readonly Note[] = ['E', 'A', 'D', 'G', 'B', 'E'];
 

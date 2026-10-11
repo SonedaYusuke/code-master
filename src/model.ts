@@ -8,12 +8,12 @@ export function isLevel(n: number): n is Level {
   return (LEVELS as readonly number[]).includes(n);
 }
 
-export type Chord = {
+/** 押さえ方。早見表のコードはレベルを持たない */
+export type ChordShape = {
   /** 一意キー。例: "C", "Am", "F#m7", "Bb" */
   id: string;
   /** 表示名。例: "B♭" */
   name: string;
-  level: Level;
   /** 6弦→1弦の順、長さ6。null=ミュート, 0=開放 */
   frets: (number | null)[];
   /** 指番号（1〜4）。6弦→1弦の順 */
@@ -23,3 +23,6 @@ export type Chord = {
   /** ダイアグラムの表示開始フレット。省略時は 1 */
   baseFret?: number;
 };
+
+/** 学習・クイズ用のコード */
+export type Chord = ChordShape & { level: Level };

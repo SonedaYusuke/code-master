@@ -1,4 +1,4 @@
-import type { Chord } from '../model';
+import type { ChordShape as Chord } from '../model';
 import { stringNotes } from '../lib/notes';
 
 const FRET_COUNT = 5;

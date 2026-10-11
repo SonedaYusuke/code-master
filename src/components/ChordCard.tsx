@@ -1,4 +1,4 @@
-import type { Chord } from '../model';
+import type { ChordShape as Chord } from '../model';
 import { chordTones, rootNote } from '../lib/notes';
 import ChordDiagram from './ChordDiagram';
 
