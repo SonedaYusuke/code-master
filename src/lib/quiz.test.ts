@@ -17,15 +17,15 @@ describe('generateQuiz', () => {
   });
 
   it('10個以上のレベルでは同じコードを2回出さない', () => {
-    const ids = generateQuiz(chordsOfLevel(1), CHORDS, seededRng(2)).map((q) => q.answer.id);
+    const ids = generateQuiz(chordsOfLevel(2), CHORDS, seededRng(2)).map((q) => q.answer.id);
     expect(new Set(ids).size).toBe(QUESTION_COUNT);
   });
 
   it('10個未満のレベルでも10問出し、全コードが少なくとも1回出る', () => {
-    const level3 = chordsOfLevel(3);
-    const questions = generateQuiz(level3, CHORDS, seededRng(3));
+    const level1 = chordsOfLevel(1);
+    const questions = generateQuiz(level1, CHORDS, seededRng(3));
     expect(questions).toHaveLength(QUESTION_COUNT);
-    expect(new Set(questions.map((q) => q.answer.id))).toEqual(new Set(level3.map((c) => c.id)));
+    expect(new Set(questions.map((q) => q.answer.id))).toEqual(new Set(level1.map((c) => c.id)));
   });
 
   it('選択肢は4つで重複がなく、正解がちょうど1つ含まれる', () => {
@@ -50,6 +50,17 @@ describe('generateQuiz', () => {
     for (const q of generateQuiz(twoChords, CHORDS, seededRng(8))) {
       expect(q.choices).toHaveLength(CHOICE_COUNT);
       expect(new Set(q.choices.map((c) => c.id)).size).toBe(CHOICE_COUNT);
+    }
+  });
+
+  it('他のレベルから補うときも、選択肢に同じ名前を並べない', () => {
+    // Lv5 の C7（Lv3 にも同じ名前がある）を、他のレベルだけで補う状況を作る
+    const answer = chordsOfLevel(5).find((c) => c.name === 'C7')!;
+    for (const seed of [9, 10, 11, 12]) {
+      for (const q of generateQuiz([answer], CHORDS, seededRng(seed))) {
+        const names = q.choices.map((c) => c.name);
+        expect(new Set(names).size).toBe(CHOICE_COUNT);
+      }
     }
   });
 

@@ -42,7 +42,15 @@ function buildChoices(
   const levelIds = new Set(levelChords.map((c) => c.id));
   const sameLevel = shuffle(levelChords.filter((c) => c.id !== answer.id), rng);
   const others = shuffle(allChords.filter((c) => !levelIds.has(c.id)), rng);
-  const distractors = [...sameLevel, ...others].slice(0, CHOICE_COUNT - 1);
+  // 別のレベルに同じ名前の形（例: Lv3 と Lv5 の C7）があるので、名前が重ならないものだけ選ぶ
+  const names = new Set([answer.name]);
+  const distractors: Chord[] = [];
+  for (const chord of [...sameLevel, ...others]) {
+    if (distractors.length === CHOICE_COUNT - 1) break;
+    if (names.has(chord.name)) continue;
+    names.add(chord.name);
+    distractors.push(chord);
+  }
   return shuffle([answer, ...distractors], rng);
 }
 

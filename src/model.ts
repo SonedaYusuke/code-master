@@ -1,7 +1,7 @@
 export const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'] as const;
 export type Note = (typeof NOTES)[number];
 
-export const LEVELS = [1, 2, 3, 4, 5] as const;
+export const LEVELS = [1, 2, 3, 4, 5, 6, 7, 8] as const;
 export type Level = (typeof LEVELS)[number];
 
 export function isLevel(n: number): n is Level {

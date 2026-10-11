@@ -1,99 +1,108 @@
 import type { Chord, Level } from '../model';
+import { CHART, type VoicingLabel } from './chart';
 
 export const LEVEL_INFO: Record<Level, { title: string; description: string }> = {
-  1: { title: '必須コード', description: 'まず最初に覚えたい基本のコード。F と B のバレーもここで挑戦します。' },
-  2: { title: 'オープンの7th', description: '開放弦を使ったセブンスコード。ブルースやポップスでよく登場します。' },
-  3: { title: 'バレーコード（基本）', description: '6弦・5弦ルートのバレーで、いろいろなキーのメジャー・マイナーを押さえます。' },
-  4: { title: 'バレーの7th系・sus', description: 'M7・m7 と sus2 / sus4。響きに色をつけるコードです。' },
-  5: { title: 'テンション・応用', description: 'add9・6・dim・aug・m7♭5・9th。知っておくと表現の幅が広がります。' },
+  1: { title: '必須コード', description: 'まず最初に覚えたい、開放弦を使った基本のコード。' },
+  2: { title: '定番のバレー', description: '最初の壁の F と B から始めて、よく登場するバレーコードを押さえます。' },
+  3: { title: 'オープンの7th', description: '開放弦を使ったセブンスコード。ブルースやポップスでよく登場します。' },
+  4: { title: 'M7・m7', description: 'オープンとバレーで、メジャーセブンスとマイナーセブンスを押さえます。' },
+  5: { title: 'バレーの7th', description: '6弦・5弦ルートのバレーで、いろいろなキーのセブンスを押さえます。' },
+  6: { title: 'sus・add9', description: '開放弦の形で覚える、浮遊感のある sus と add9。' },
+  7: { title: '6・9 とバレーの sus・add9', description: '6th・9th と、バレーで押さえる sus・add9。' },
+  8: { title: 'dim・aug 系', description: 'つなぎや緊張感を作る、ディミニッシュ・オーギュメント系のコード。' },
 };
 
-export const CHORDS: Chord[] = [
-  // Lv1
-  { id: 'C', name: 'C', level: 1, frets: [null, 3, 2, 0, 1, 0], fingers: [null, 3, 2, null, 1, null] },
-  { id: 'G', name: 'G', level: 1, frets: [3, 2, 0, 0, 0, 3], fingers: [3, 2, null, null, null, 4] },
-  { id: 'D', name: 'D', level: 1, frets: [null, null, 0, 2, 3, 2], fingers: [null, null, null, 1, 3, 2] },
-  { id: 'A', name: 'A', level: 1, frets: [null, 0, 2, 2, 2, 0], fingers: [null, null, 1, 2, 3, null] },
-  { id: 'E', name: 'E', level: 1, frets: [0, 2, 2, 1, 0, 0], fingers: [null, 2, 3, 1, null, null] },
-  { id: 'Am', name: 'Am', level: 1, frets: [null, 0, 2, 2, 1, 0], fingers: [null, null, 2, 3, 1, null] },
-  { id: 'Em', name: 'Em', level: 1, frets: [0, 2, 2, 0, 0, 0], fingers: [null, 2, 3, null, null, null] },
-  { id: 'Dm', name: 'Dm', level: 1, frets: [null, null, 0, 2, 3, 1], fingers: [null, null, null, 2, 3, 1] },
-  {
-    id: 'B', name: 'B', level: 1,
-    frets: [null, 2, 4, 4, 4, 2], fingers: [null, 1, 2, 3, 4, 1],
-    barre: { fret: 2, fromString: 5, toString: 1 },
-  },
-  {
-    id: 'F', name: 'F', level: 1,
-    frets: [1, 3, 3, 2, 1, 1], fingers: [1, 3, 4, 2, 1, 1],
-    barre: { fret: 1, fromString: 6, toString: 1 },
-  },
+/** 早見表から選ぶ形。label を省くと一番低いポジションの形、name を省くと早見表の表記 */
+type Pick = { chord: string; label?: VoicingLabel; name?: string };
 
-  // Lv2
-  { id: 'A7', name: 'A7', level: 2, frets: [null, 0, 2, 0, 2, 0], fingers: [null, null, 2, null, 3, null] },
-  { id: 'D7', name: 'D7', level: 2, frets: [null, null, 0, 2, 1, 2], fingers: [null, null, null, 2, 1, 3] },
-  { id: 'E7', name: 'E7', level: 2, frets: [0, 2, 0, 1, 0, 0], fingers: [null, 2, null, 1, null, null] },
-  { id: 'G7', name: 'G7', level: 2, frets: [3, 2, 0, 0, 0, 1], fingers: [3, 2, null, null, null, 1] },
-  { id: 'C7', name: 'C7', level: 2, frets: [null, 3, 2, 3, 1, 0], fingers: [null, 3, 2, 4, 1, null] },
-  { id: 'B7', name: 'B7', level: 2, frets: [null, 2, 1, 2, 0, 2], fingers: [null, 2, 1, 3, null, 4] },
-  { id: 'Am7', name: 'Am7', level: 2, frets: [null, 0, 2, 0, 1, 0], fingers: [null, null, 2, null, 1, null] },
-  { id: 'Em7', name: 'Em7', level: 2, frets: [0, 2, 0, 0, 0, 0], fingers: [null, 2, null, null, null, null] },
-  { id: 'Dm7', name: 'Dm7', level: 2, frets: [null, null, 0, 2, 1, 1], fingers: [null, null, null, 2, 1, 1] },
+const LEVEL_PICKS: Record<Level, Pick[]> = {
+  1: [
+    { chord: 'C' }, { chord: 'D' }, { chord: 'E' }, { chord: 'G' },
+    { chord: 'A' }, { chord: 'Am' }, { chord: 'Dm' }, { chord: 'Em' },
+  ],
+  2: [
+    { chord: 'F' }, { chord: 'B' }, { chord: 'Bm' }, { chord: 'A#', name: 'B♭' }, { chord: 'F#m' },
+    { chord: 'Cm' }, { chord: 'Gm' }, { chord: 'C#m' }, { chord: 'Fm' },
+    { chord: 'D#', label: '5弦ルート', name: 'E♭' }, { chord: 'G#', name: 'A♭' },
+  ],
+  3: [
+    { chord: 'A7' }, { chord: 'B7' }, { chord: 'C7' }, { chord: 'D7' }, { chord: 'E7' },
+    { chord: 'G7' }, { chord: 'Am7' }, { chord: 'Dm7' }, { chord: 'Em7' },
+  ],
+  4: [
+    { chord: 'Cmaj7', label: 'オープン' },
+    { chord: 'Dmaj7', label: 'オープン' },
+    { chord: 'Gmaj7', label: 'オープン' },
+    { chord: 'Amaj7', label: 'オープン' },
+    { chord: 'Fmaj7', label: '6弦ルート' },
+    { chord: 'A#maj7', label: '5弦ルート', name: 'B♭M7' },
+    { chord: 'F#m7', label: '6弦ルート' },
+    { chord: 'Gm7', label: '6弦ルート' },
+    { chord: 'Bm7', label: '5弦ルート' },
+    { chord: 'Cm7', label: '5弦ルート' },
+  ],
+  5: [
+    { chord: 'F7', label: '6弦ルート' },
+    { chord: 'G7', label: '6弦ルート' },
+    { chord: 'A7', label: '6弦ルート' },
+    { chord: 'A#7', label: '5弦ルート', name: 'B♭7' },
+    { chord: 'B7', label: '5弦ルート' },
+    { chord: 'C7', label: '5弦ルート' },
+    { chord: 'D7', label: '5弦ルート' },
+    { chord: 'E7', label: '5弦ルート' },
+  ],
+  6: [
+    { chord: 'Asus4', label: 'オープン' },
+    { chord: 'Dsus4', label: 'オープン' },
+    { chord: 'Esus4', label: 'オープン' },
+    { chord: 'Csus4', label: 'オープン' },
+    { chord: 'Asus2', label: 'オープン' },
+    { chord: 'Dsus2', label: 'オープン' },
+    { chord: 'Cadd9', label: 'オープン' },
+    { chord: 'Gadd9', label: 'オープン' },
+    { chord: 'Eadd9', label: 'オープン' },
+    { chord: 'Aadd9', label: 'オープン' },
+  ],
+  7: [
+    { chord: 'A6', label: 'オープン' },
+    { chord: 'C6', label: '5弦ルート' },
+    { chord: 'G6', label: '6弦ルート' },
+    { chord: 'E9', label: 'オープン' },
+    { chord: 'C9', label: '5弦ルート' },
+    { chord: 'G9', label: '6弦ルート' },
+    { chord: 'Gsus4', label: '6弦ルート' },
+    { chord: 'Bsus4', label: '5弦ルート' },
+    { chord: 'Fadd9', label: '6弦ルート' },
+    { chord: 'Dadd9', label: '5弦ルート' },
+  ],
+  8: [
+    { chord: 'Am7b5', label: 'オープン' },
+    { chord: 'Bm7b5', label: '5弦ルート' },
+    { chord: 'F#m7b5', label: '6弦ルート' },
+    { chord: 'Bdim', label: '5弦ルート' },
+    { chord: 'Cdim', label: '5弦ルート' },
+    { chord: 'C#dim7', label: '5弦ルート' },
+    { chord: 'Gdim7', label: '6弦ルート' },
+    { chord: 'Edim7', label: '4弦ルート' },
+    { chord: 'Caug', label: '5弦ルート' },
+    { chord: 'Eaug', label: 'オープン' },
+  ],
+};
 
-  // Lv3
-  {
-    id: 'Bm', name: 'Bm', level: 3,
-    frets: [null, 2, 4, 4, 3, 2], fingers: [null, 1, 3, 4, 2, 1],
-    barre: { fret: 2, fromString: 5, toString: 1 },
-  },
-  {
-    id: 'Bb', name: 'B♭', level: 3,
-    frets: [null, 1, 3, 3, 3, 1], fingers: [null, 1, 2, 3, 4, 1],
-    barre: { fret: 1, fromString: 5, toString: 1 },
-  },
-  {
-    id: 'F#m', name: 'F#m', level: 3,
-    frets: [2, 4, 4, 2, 2, 2], fingers: [1, 3, 4, 1, 1, 1],
-    barre: { fret: 2, fromString: 6, toString: 1 },
-  },
-  {
-    id: 'Cm', name: 'Cm', level: 3,
-    frets: [null, 3, 5, 5, 4, 3], fingers: [null, 1, 3, 4, 2, 1],
-    barre: { fret: 3, fromString: 5, toString: 1 },
-  },
-  {
-    id: 'Gm', name: 'Gm', level: 3,
-    frets: [3, 5, 5, 3, 3, 3], fingers: [1, 3, 4, 1, 1, 1],
-    barre: { fret: 3, fromString: 6, toString: 1 },
-  },
+const CHART_CHORDS = new Map(CHART.flatMap((section) => section.chords).map((chord) => [chord.id, chord]));
 
-  // Lv4
-  { id: 'Fmaj7', name: 'FM7', level: 4, frets: [null, null, 3, 2, 1, 0], fingers: [null, null, 3, 2, 1, null] },
-  { id: 'Cmaj7', name: 'CM7', level: 4, frets: [null, 3, 2, 0, 0, 0], fingers: [null, 3, 2, null, null, null] },
-  {
-    id: 'Bm7', name: 'Bm7', level: 4,
-    frets: [null, 2, 4, 2, 3, 2], fingers: [null, 1, 3, 1, 2, 1],
-    barre: { fret: 2, fromString: 5, toString: 1 },
-  },
-  {
-    id: 'F#m7', name: 'F#m7', level: 4,
-    frets: [2, 4, 2, 2, 2, 2], fingers: [1, 3, 1, 1, 1, 1],
-    barre: { fret: 2, fromString: 6, toString: 1 },
-  },
-  { id: 'Asus4', name: 'Asus4', level: 4, frets: [null, 0, 2, 2, 3, 0], fingers: [null, null, 1, 2, 3, null] },
-  { id: 'Dsus4', name: 'Dsus4', level: 4, frets: [null, null, 0, 2, 3, 3], fingers: [null, null, null, 1, 2, 3] },
-  { id: 'Esus4', name: 'Esus4', level: 4, frets: [0, 2, 2, 2, 0, 0], fingers: [null, 2, 3, 4, null, null] },
-  { id: 'Asus2', name: 'Asus2', level: 4, frets: [null, 0, 2, 2, 0, 0], fingers: [null, null, 1, 2, null, null] },
-  { id: 'Dsus2', name: 'Dsus2', level: 4, frets: [null, null, 0, 2, 3, 0], fingers: [null, null, null, 1, 3, null] },
+function toChord(level: Level, { chord, label, name }: Pick): Chord {
+  const chartChord = CHART_CHORDS.get(chord);
+  if (!chartChord) throw new Error(`早見表に ${chord} がありません`);
+  const voicing = label ? chartChord.voicings.find((v) => v.label === label) : chartChord.voicings[0];
+  if (!voicing) throw new Error(`${chord} に ${label} の形がありません`);
+  const { label: _label, frequency: _frequency, ...shape } = voicing;
+  return { ...shape, name: name ?? voicing.name, level };
+}
 
-  // Lv5
-  { id: 'Cadd9', name: 'Cadd9', level: 5, frets: [null, 3, 2, 0, 3, 0], fingers: [null, 2, 1, null, 3, null] },
-  { id: 'C6', name: 'C6', level: 5, frets: [null, 3, 2, 2, 1, 0], fingers: [null, 4, 2, 3, 1, null] },
-  { id: 'Bdim', name: 'Bdim', level: 5, frets: [null, 2, 3, 4, 3, null], fingers: [null, 1, 2, 4, 3, null] },
-  { id: 'Caug', name: 'Caug', level: 5, frets: [null, 3, 2, 1, 1, 0], fingers: [null, 4, 3, 1, 2, null] },
-  { id: 'Bm7b5', name: 'Bm7♭5', level: 5, frets: [null, 2, 3, 2, 3, null], fingers: [null, 1, 3, 2, 4, null] },
-  { id: 'E9', name: 'E9', level: 5, frets: [0, 2, 0, 1, 0, 2], fingers: [null, 2, null, 1, null, 3] },
-];
+export const CHORDS: Chord[] = (Object.keys(LEVEL_PICKS).map(Number) as Level[]).flatMap((level) =>
+  LEVEL_PICKS[level].map((pick) => toChord(level, pick)),
+);
 
 export function chordsOfLevel(level: Level): Chord[] {
   return CHORDS.filter((chord) => chord.level === level);

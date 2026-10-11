@@ -4,7 +4,8 @@ export type LevelProgress = { bestScore: number; bestPoints: number; cleared: bo
 export type Progress = Partial<Record<Level, LevelProgress>>;
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
 
-export const STORAGE_KEY = 'code-master:progress';
+/** レベル構成を見直すたびにバージョンを上げて、以前の記録をリセットする */
+export const STORAGE_KEY = 'code-master:progress:v4';
 export const CLEAR_THRESHOLD = 80;
 
 function defaultStorage(): StorageLike | null {
