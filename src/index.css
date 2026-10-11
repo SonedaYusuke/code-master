@@ -68,16 +68,6 @@ a { color: var(--text); }
 }
 .chord-card { text-align: center; }
 
-.badge {
-  display: inline-block;
-  margin-left: 8px;
-  padding: 2px 10px;
-  border: var(--border);
-  border-radius: 999px;
-  background: var(--green);
-  font-size: 0.8rem;
-  font-weight: 700;
-}
 
 .chord-diagram { width: 100%; max-width: 180px; height: auto; display: block; margin: 0 auto; }
 .chord-diagram .fret, .chord-diagram .string { stroke: var(--ink); stroke-width: 1.2; }
@@ -291,3 +281,33 @@ a { color: var(--text); }
 .shape-choice { padding: 8px 4px; }
 .shape-choice .chord-diagram { max-width: 150px; }
 .shape-choice-name { display: block; font-weight: 800; }
+
+/* クイズのモード選択モーダル */
+.mode-dialog {
+  width: min(440px, calc(100% - 32px));
+  padding: 0;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+.mode-dialog::backdrop { background: rgba(26, 26, 26, 0.45); }
+.mode-dialog-body { padding: 20px; }
+.mode-options { display: grid; gap: 12px; margin-top: 16px; }
+.mode-option {
+  display: grid;
+  gap: 2px;
+  padding: 12px 16px;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+.mode-option:hover { transform: translate(1px, 1px); background: var(--yellow); }
+.mode-option:active { transform: translate(4px, 4px); box-shadow: none; }
+.mode-option-title { font-size: 1.1rem; font-weight: 800; }
+.mode-option-record { font-size: 0.85rem; font-weight: 700; }

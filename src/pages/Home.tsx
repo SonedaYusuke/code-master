@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { LEVELS } from '../model';
+import { LEVELS, type Level } from '../model';
 import { LEVEL_INFO } from '../data/chords';
-import { loadProgress } from '../lib/progress';
 import { formatRoute } from '../lib/route';
 import { MAX_LIVES, MAX_QUESTIONS } from '../lib/challenge';
+import QuizModeDialog from '../components/QuizModeDialog';
 
 export default function Home() {
-  const [progress] = useState(() => loadProgress());
-  const [buildProgress] = useState(() => loadProgress(undefined, 'build'));
-  const [shapeProgress] = useState(() => loadProgress(undefined, 'shape'));
+  const [dialogLevel, setDialogLevel] = useState<Level | null>(null);
 
   return (
     <main className="page">
@@ -25,34 +23,18 @@ export default function Home() {
         </div>
       </section>
       <div className="level-grid">
-        {LEVELS.map((level) => {
-          const record = progress[level];
-          const buildRecord = buildProgress[level];
-          const shapeRecord = shapeProgress[level];
-          return (
-            <section key={level} className="level-card">
-              <h2>Lv{level} {LEVEL_INFO[level].title}</h2>
-              <p className="muted">{LEVEL_INFO[level].description}</p>
-              <p>
-                4択: {record ? `最高正答率 ${record.bestScore}% / ハイスコア ${record.bestPoints.toLocaleString('ja-JP')}pt` : '未挑戦'}
-                {record?.cleared && <span className="badge">クリア済み</span>}
-              </p>
-              <p>
-                ルート＋タイプ: {buildRecord ? `ハイスコア ${buildRecord.bestPoints.toLocaleString('ja-JP')}pt` : '未挑戦'}
-              </p>
-              <p>
-                形を選ぶ: {shapeRecord ? `ハイスコア ${shapeRecord.bestPoints.toLocaleString('ja-JP')}pt` : '未挑戦'}
-              </p>
-              <div className="actions">
-                <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習</a>
-                <a className="button" href={formatRoute({ page: 'quiz', level })}>4択</a>
-                <a className="button" href={formatRoute({ page: 'build', level })}>ルート＋タイプ</a>
-                <a className="button" href={formatRoute({ page: 'shape', level })}>形を選ぶ</a>
-              </div>
-            </section>
-          );
-        })}
+        {LEVELS.map((level) => (
+          <section key={level} className="level-card">
+            <h2>Lv{level} {LEVEL_INFO[level].title}</h2>
+            <p className="muted">{LEVEL_INFO[level].description}</p>
+            <div className="actions">
+              <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習</a>
+              <button className="button" onClick={() => setDialogLevel(level)}>クイズ</button>
+            </div>
+          </section>
+        ))}
       </div>
+      <QuizModeDialog level={dialogLevel} onClose={() => setDialogLevel(null)} />
     </main>
   );
 }
