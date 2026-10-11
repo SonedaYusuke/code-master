@@ -1,15 +1,14 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Chord, Level } from '../model';
 import { CHORDS, LEVEL_INFO, chordsOfLevel } from '../data/chords';
 import { generateQuiz, scorePercent, type QuizResult } from '../lib/quiz';
-import { TIME_LIMIT_MS, pointsFor } from '../lib/scoring';
+import { pointsFor } from '../lib/scoring';
 import { saveResult } from '../lib/progress';
 import { formatRoute } from '../lib/route';
 import ChordDiagram from '../components/ChordDiagram';
-
-const COUNTDOWN_SECONDS = 3;
-const DANGER_MS = 2000;
-const TICK_MS = 50;
+import TimerBar from '../components/TimerBar';
+import { useCountdown } from '../hooks/useCountdown';
+import { useQuestionTimer } from '../hooks/useQuestionTimer';
 
 type Props = { level: Level; onFinish: (result: QuizResult) => void };
 
@@ -18,38 +17,20 @@ type Answer = { choiceId: string | null; points: number };
 
 export default function Quiz({ level, onFinish }: Props) {
   const [questions] = useState(() => generateQuiz(chordsOfLevel(level), CHORDS));
-  const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
+  const countdown = useCountdown();
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState<Answer | null>(null);
-  const [remainingMs, setRemainingMs] = useState(TIME_LIMIT_MS);
   const [correct, setCorrect] = useState(0);
   const [wrong, setWrong] = useState<Chord[]>([]);
   const [points, setPoints] = useState(0);
   const [combo, setCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
-  const deadline = useRef(0);
 
   const question = questions[index];
   const playing = countdown <= 0;
   const answered = answer !== null;
   const isCorrect = answer?.choiceId === question.answer.id;
-
-  useEffect(() => {
-    if (countdown <= 0) return;
-    const timer = setTimeout(() => setCountdown((n) => n - 1), 1000);
-    return () => clearTimeout(timer);
-  }, [countdown]);
-
-  // 問題ごとにタイマーを動かし、回答したら止める
-  useEffect(() => {
-    if (!playing || answered) return;
-    deadline.current = performance.now() + TIME_LIMIT_MS;
-    setRemainingMs(TIME_LIMIT_MS);
-    const timer = setInterval(() => {
-      setRemainingMs(Math.max(0, deadline.current - performance.now()));
-    }, TICK_MS);
-    return () => clearInterval(timer);
-  }, [playing, answered, index]);
+  const { remainingMs, stop } = useQuestionTimer(playing && !answered, index);
 
   useEffect(() => {
     if (playing && !answered && remainingMs <= 0) resolve(null);
@@ -57,11 +38,10 @@ export default function Quiz({ level, onFinish }: Props) {
 
   function resolve(choiceId: string | null) {
     if (answered) return;
-    const remaining = Math.max(0, deadline.current - performance.now());
+    const remaining = stop();
     const right = choiceId === question.answer.id;
     const nextCombo = right ? combo + 1 : 0;
     const gained = pointsFor(right, remaining, nextCombo);
-    setRemainingMs(remaining);
     setAnswer({ choiceId, points: gained });
     setPoints((p) => p + gained);
     setCombo(nextCombo);
@@ -116,17 +96,7 @@ export default function Quiz({ level, onFinish }: Props) {
             </span>
           </div>
           <div className="combo-row">{combo >= 2 && <span className="combo">{combo} コンボ！</span>}</div>
-          <div
-            className={remainingMs <= DANGER_MS ? 'timer danger' : 'timer'}
-            role="progressbar"
-            aria-label="残り時間"
-            aria-valuemin={0}
-            aria-valuemax={TIME_LIMIT_MS / 1000}
-            aria-valuenow={Math.ceil(remainingMs / 1000)}
-          >
-            <div className="timer-bar" style={{ width: `${(remainingMs / TIME_LIMIT_MS) * 100}%` }} />
-            <span className="timer-text">{(remainingMs / 1000).toFixed(1)}秒</span>
-          </div>
+          <TimerBar remainingMs={remainingMs} />
           <ChordDiagram chord={question.answer} showNotes={answered} />
           <div className="choices">
             {question.choices.map((choice) => (
