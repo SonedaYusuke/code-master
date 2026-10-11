@@ -165,6 +165,7 @@ a { color: var(--text); }
 }
 .freq-badge.freq-top, .chip.freq-top.selected { background: var(--red); }
 .freq-badge.freq-common, .chip.freq-common.selected { background: var(--yellow); }
+.freq-badge.simplified, .chip.simplified.selected { background: var(--green); }
 .root-nav .button:disabled { opacity: 0.35; box-shadow: none; }
 
 /* クイズのゲーム要素 */
