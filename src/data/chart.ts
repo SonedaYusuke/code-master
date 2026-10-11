@@ -160,10 +160,13 @@ const SIMPLIFIED_SHAPES: Record<string, Pick<ChordShape, 'frets' | 'fingers' | '
 /** 全ルートに当てはめる省略形。ルートが開放弦になる位置は別の形と重なるので載せない */
 const SIMPLIFIED_FAMILIES: MovableFamily[] = [
   {
-    // 6弦ルートの m7 から5弦と1弦を抜いた形（例: F#m7 = 2x222x）
+    // 6弦ルートの 7 から5弦と1弦を抜いた形（例: G7 = 3x343x）、m7 から5弦と1弦を抜いた形（例: F#m7 = 2x222x）
     label: '省略形',
     openNote: 'E',
-    shapes: { m7: { frets: [0, null, 0, 0, 0, null], fingers: [1, null, 1, 1, 1, null] } },
+    shapes: {
+      '7': { frets: [0, null, 0, 1, 0, null], fingers: [1, null, 1, 2, 1, null] },
+      m7: { frets: [0, null, 0, 0, 0, null], fingers: [1, null, 1, 1, 1, null] },
+    },
   },
 ];
 
