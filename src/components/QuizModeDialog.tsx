@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 import type { Level } from '../model';
 import { LEVEL_INFO } from '../data/chords';
-import { MODE_LABELS, type QuizMode } from '../lib/quiz';
+import { MODE_LABELS, QUESTION_COUNT, type QuizMode } from '../lib/quiz';
 import { formatRoute, quizRoute } from '../lib/route';
 import { loadProgress } from '../lib/progress';
+import { maxPointsFor, rankFor } from '../lib/scoring';
 
 const MODE_DESCRIPTIONS: Record<QuizMode, string> = {
   choice: '形を見て、コード名を選ぶ',
@@ -52,6 +53,7 @@ export default function QuizModeDialog({ level, onClose }: Props) {
                   <span className="muted">{MODE_DESCRIPTIONS[mode]}</span>
                   <span className="mode-option-record">
                     {best === undefined ? '未挑戦' : `ハイスコア ${best.toLocaleString('ja-JP')}pt`}
+                    {best !== undefined && <span className="mode-option-rank">{rankFor(best, maxPointsFor(QUESTION_COUNT))}</span>}
                   </span>
                 </a>
               );

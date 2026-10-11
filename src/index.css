@@ -310,7 +310,8 @@ a { color: var(--text); }
 .mode-option:hover { transform: translate(1px, 1px); background: var(--yellow); }
 .mode-option:active { transform: translate(4px, 4px); box-shadow: none; }
 .mode-option-title { font-size: 1.1rem; font-weight: 800; }
-.mode-option-record { font-size: 0.85rem; font-weight: 700; }
+.mode-option-record { display: flex; justify-content: space-between; gap: 8px; font-size: 0.85rem; font-weight: 700; }
+.mode-option-rank { color: var(--pink-text); font-weight: 800; }
 
 /* 遊び方 */
 .help-button {
