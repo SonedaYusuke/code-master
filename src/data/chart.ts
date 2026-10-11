@@ -132,6 +132,7 @@ const FAMILIES: MovableFamily[] = [
 const OPEN_SHAPES: Record<string, Pick<ChordShape, 'frets' | 'fingers'>> = {
   C: { frets: [null, 3, 2, 0, 1, 0], fingers: [null, 3, 2, null, 1, null] },
   C7: { frets: [null, 3, 2, 3, 1, 0], fingers: [null, 3, 2, 4, 1, null] },
+  B7: { frets: [null, 2, 1, 2, 0, 2], fingers: [null, 2, 1, 3, null, 4] },
   Cmaj7: { frets: [null, 3, 2, 0, 0, 0], fingers: [null, 3, 2, null, null, null] },
   Csus4: { frets: [null, 3, 3, 0, 1, 1], fingers: [null, 3, 4, null, 1, 1] },
   Cadd9: { frets: [null, 3, 2, 0, 3, 0], fingers: [null, 2, 1, null, 3, null] },
@@ -144,6 +145,7 @@ const OPEN_SHAPES: Record<string, Pick<ChordShape, 'frets' | 'fingers'>> = {
   G: { frets: [3, 2, 0, 0, 0, 3], fingers: [3, 2, null, null, null, 4] },
   G7: { frets: [3, 2, 0, 0, 0, 1], fingers: [3, 2, null, null, null, 1] },
   Gmaj7: { frets: [3, 2, 0, 0, 0, 2], fingers: [3, 2, null, null, null, 1] },
+  Gadd9: { frets: [3, 2, 0, 2, 0, 3], fingers: [3, 2, null, 1, null, 4] },
 };
 
 const MAX_FRET_WITHOUT_OFFSET = 5;
