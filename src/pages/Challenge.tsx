@@ -103,7 +103,7 @@ export default function Challenge() {
           <div className="mode-toggle" role="group" aria-label="答え方">
             {(Object.keys(MODE_LABELS) as QuizMode[]).map((m) => (
               <button key={m} className={mode === m ? 'chip selected' : 'chip'} aria-pressed={mode === m} onClick={() => setMode(m)}>
-                {MODE_LABELS[m]}（{timeLimitFor(m) / 1000}秒）
+                {MODE_LABELS[m]}
               </button>
             ))}
           </div>
