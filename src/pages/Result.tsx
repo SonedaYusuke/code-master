@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { Level } from '../model';
 import { LEVEL_INFO } from '../data/chords';
-import { CLEAR_THRESHOLD } from '../lib/progress';
 import { MODE_LABELS, type QuizResult } from '../lib/quiz';
 import { formatRoute } from '../lib/route';
 import { navigate } from '../router';
@@ -10,13 +9,6 @@ import QuizModeDialog from '../components/QuizModeDialog';
 import ResultSummary from '../components/ResultSummary';
 
 type Props = { level: Level; result: QuizResult | null };
-
-/** 全問正解ならパーフェクト、クリア条件（正答率80%）を満たせばクリア */
-function achievementOf(result: QuizResult): string | undefined {
-  if (result.correct === result.total) return 'パーフェクト！';
-  if (result.score >= CLEAR_THRESHOLD) return 'クリア！';
-  return undefined;
-}
 
 export default function Result({ level, result }: Props) {
   const valid = result !== null && result.level === level;
@@ -38,7 +30,6 @@ export default function Result({ level, result }: Props) {
         heading={MODE_LABELS[result.mode]}
         points={result.points}
         newHighScore={result.newHighScore}
-        achievement={achievementOf(result)}
         stats={[
           { label: '正解', value: `${result.correct} / ${result.total}` },
           { label: '最大コンボ', value: `${result.maxCombo}` },

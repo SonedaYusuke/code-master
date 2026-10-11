@@ -8,23 +8,20 @@ type Props = {
   heading: string;
   points: number;
   newHighScore: boolean;
-  /** 「クリア！」「100問完走！」のような達成バッジ */
-  achievement?: string;
   stats: { label: string; value: string }[];
   actions: ReactNode;
 };
 
 /** クイズとチャレンジの結果を、ポイント・成績タイル・ボタンの順にまとめて見せる */
-export default function ResultSummary({ title, description, heading, points, newHighScore, achievement, stats, actions }: Props) {
+export default function ResultSummary({ title, description, heading, points, newHighScore, stats, actions }: Props) {
   return (
     <section className="result-card">
       <h2 className="result-title">{title}</h2>
       {description && <p className="muted result-description">{description}</p>}
       <p className="result-heading">{heading}</p>
-      {(newHighScore || achievement) && (
+      {newHighScore && (
         <div className="result-badges">
-          {newHighScore && <span className="high-score">ハイスコア更新！</span>}
-          {achievement && <span className="achievement">{achievement}</span>}
+          <span className="high-score">ハイスコア更新！</span>
         </div>
       )}
       <p className="result-points">

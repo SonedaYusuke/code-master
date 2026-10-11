@@ -78,10 +78,9 @@ export default function Challenge() {
         <ResultSummary
           title="チャレンジモード"
           description={`${MODE_LABELS[mode]} / 出題コード: ${selectionKey(types)}`}
-          heading={summary.completed ? 'クリア' : 'ゲームオーバー'}
+          heading={summary.completed ? '完走' : 'ゲームオーバー'}
           points={summary.points}
           newHighScore={summary.newHighScore}
-          achievement={summary.completed ? `${MAX_QUESTIONS}問完走！` : undefined}
           stats={[
             { label: '正解', value: `${summary.correct} / ${summary.answered}` },
             { label: '最大コンボ', value: `${summary.maxCombo}` },

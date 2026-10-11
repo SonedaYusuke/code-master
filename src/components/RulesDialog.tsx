@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react';
 import { MAX_LIVES, MAX_QUESTIONS } from '../lib/challenge';
-import { CLEAR_THRESHOLD } from '../lib/progress';
 import { QUESTION_COUNT } from '../lib/quiz';
 import { BASE_POINTS, COMBO_STEP, MAX_COMBO_BONUS, MAX_TIME_BONUS, TIME_LIMIT_MS } from '../lib/scoring';
 
@@ -39,7 +38,6 @@ export default function RulesDialog({ open, onClose }: Props) {
         <h3>レベルのクイズ</h3>
         <ul>
           <li>{QUESTION_COUNT} 問出題</li>
-          <li>正答率 {CLEAR_THRESHOLD}% 以上でクリア、全問正解でパーフェクト</li>
           <li>ハイスコアは答え方ごとに記録</li>
         </ul>
         <h3>チャレンジモード</h3>

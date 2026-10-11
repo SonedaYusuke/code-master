@@ -339,7 +339,7 @@ a { color: var(--text); }
   font-weight: 800;
 }
 .result-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
-.high-score, .achievement {
+.high-score {
   padding: 2px 14px;
   border: var(--border);
   border-radius: 999px;
@@ -347,7 +347,6 @@ a { color: var(--text); }
   animation: pop 0.4s ease-out;
 }
 .high-score { background: var(--red); }
-.achievement { background: var(--green); }
 .result-points { margin: 8px 0 4px; font-size: 3.4rem; font-weight: 800; line-height: 1.1; }
 .result-points-unit { margin-left: 6px; font-size: 1.4rem; }
 /* タイルの数に合わせて等分する */
@@ -362,5 +361,5 @@ a { color: var(--text); }
 .result-stat dd { margin: 2px 0 0; font-size: 1.4rem; font-weight: 800; }
 .result-actions { justify-content: center; margin-top: 20px; }
 @media (prefers-reduced-motion: reduce) {
-  .high-score, .achievement { animation: none; }
+  .high-score { animation: none; }
 }

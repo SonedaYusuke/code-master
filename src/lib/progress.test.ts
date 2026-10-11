@@ -23,12 +23,12 @@ describe('loadProgress', () => {
   it('保存した記録を読める', () => {
     const storage = memoryStorage();
     saveResult(1, { score: 90, points: 2100 }, storage);
-    expect(loadProgress(storage)).toEqual({ 1: { bestScore: 90, bestPoints: 2100, cleared: true } });
+    expect(loadProgress(storage)).toEqual({ 1: { bestScore: 90, bestPoints: 2100 } });
   });
 
   it('ポイントがない以前の記録は 0pt として読む', () => {
-    expect(loadProgress(memoryStorage(JSON.stringify({ 2: { bestScore: 60, cleared: false } })))).toEqual({
-      2: { bestScore: 60, bestPoints: 0, cleared: false },
+    expect(loadProgress(memoryStorage(JSON.stringify({ 2: { bestScore: 60 } })))).toEqual({
+      2: { bestScore: 60, bestPoints: 0 },
     });
   });
 
@@ -43,7 +43,7 @@ describe('loadProgress', () => {
       3: { bestScore: 150 },
       9: { bestScore: 50 },
     });
-    expect(loadProgress(memoryStorage(raw))).toEqual({ 1: { bestScore: 70, bestPoints: 0, cleared: false } });
+    expect(loadProgress(memoryStorage(raw))).toEqual({ 1: { bestScore: 70, bestPoints: 0 } });
   });
 
   it('storage が使えない・例外を投げるなら空', () => {
@@ -59,23 +59,18 @@ describe('モードごとの記録', () => {
     saveResult(1, { score: 60, points: 3000 }, storage, 'build');
     saveResult(1, { score: 70, points: 1000 }, storage, 'shape');
     expect(loadProgress(storage, 'shape')[1]?.bestPoints).toBe(1000);
-    expect(loadProgress(storage, 'choice')[1]).toEqual({ bestScore: 90, bestPoints: 2000, cleared: true });
-    expect(loadProgress(storage, 'build')[1]).toEqual({ bestScore: 60, bestPoints: 3000, cleared: false });
+    expect(loadProgress(storage, 'choice')[1]).toEqual({ bestScore: 90, bestPoints: 2000 });
+    expect(loadProgress(storage, 'build')[1]).toEqual({ bestScore: 60, bestPoints: 3000 });
     expect(loadProgress(storage)[1]?.bestPoints).toBe(2000);
   });
 });
 
 describe('saveResult', () => {
-  it('80% 以上でクリアになる', () => {
-    expect(saveResult(2, { score: 80, points: 0 }, memoryStorage()).progress[2]?.cleared).toBe(true);
-    expect(saveResult(2, { score: 79, points: 0 }, memoryStorage()).progress[2]?.cleared).toBe(false);
-  });
-
   it('正答率とポイントはそれぞれ最高値だけを残す', () => {
     const storage = memoryStorage();
     saveResult(1, { score: 90, points: 1500 }, storage);
     saveResult(1, { score: 50, points: 1800 }, storage);
-    expect(loadProgress(storage)[1]).toEqual({ bestScore: 90, bestPoints: 1800, cleared: true });
+    expect(loadProgress(storage)[1]).toEqual({ bestScore: 90, bestPoints: 1800 });
   });
 
   it('ハイスコアを超えたときだけ newHighScore になる', () => {
@@ -95,14 +90,14 @@ describe('saveResult', () => {
     saveResult(1, { score: 90, points: 2000 }, storage);
     saveResult(2, { score: 40, points: 500 }, storage);
     expect(loadProgress(storage)).toEqual({
-      1: { bestScore: 90, bestPoints: 2000, cleared: true },
-      2: { bestScore: 40, bestPoints: 500, cleared: false },
+      1: { bestScore: 90, bestPoints: 2000 },
+      2: { bestScore: 40, bestPoints: 500 },
     });
   });
 
   it('storage が例外を投げても落ちずに結果を返す', () => {
     expect(saveResult(1, { score: 90, points: 2000 }, throwingStorage)).toEqual({
-      progress: { 1: { bestScore: 90, bestPoints: 2000, cleared: true } },
+      progress: { 1: { bestScore: 90, bestPoints: 2000 } },
       newHighScore: true,
     });
   });
