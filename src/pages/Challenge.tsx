@@ -154,7 +154,7 @@ function createQuestion(pool: ChallengeItem[], poolTypes: ChartType[], previous:
   return {
     ...question,
     build: buildQuestion({ root, type, preferFlat: false }, poolTypes),
-    shapes: buildShapeChoices(question.item).map((choice) => ({ ...choice.voicing, name: choice.name })),
+    shapes: buildShapeChoices(question.item, new Set(poolTypes)).map((choice) => ({ ...choice.voicing, name: choice.name })),
   };
 }
 
