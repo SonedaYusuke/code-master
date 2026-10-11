@@ -78,6 +78,7 @@ a { color: var(--text); }
 .chord-diagram .note { fill: var(--pink-text); font-size: 12px; font-weight: 800; }
 
 .quiz { max-width: 480px; margin: 0 auto; text-align: center; }
+.quiz .back { display: block; width: fit-content; }
 .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
 .choice {
   padding: 14px;
