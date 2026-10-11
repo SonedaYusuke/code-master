@@ -1,7 +1,7 @@
 import type { QuizMode } from './quiz';
 
 /** 4択の制限時間 */
-export const TIME_LIMIT_MS = 5000;
+export const TIME_LIMIT_MS = 10000;
 /** ルート＋タイプは2回答えるので長めにする */
 export const BUILD_TIME_LIMIT_MS = 10000;
 
