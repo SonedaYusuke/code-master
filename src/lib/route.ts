@@ -1,9 +1,10 @@
 import { isLevel, type Level } from '../model';
 
 type LevelPage = 'study' | 'quiz' | 'result';
-export type Route = { page: 'home' } | { page: LevelPage; level: Level };
+export type Route = { page: 'home' } | { page: 'chart' } | { page: LevelPage; level: Level };
 
 export function parseRoute(hash: string): Route {
+  if (hash === '#/chart') return { page: 'chart' };
   const match = hash.match(/^#\/level\/(\d+)\/(study|quiz|result)$/);
   if (match) {
     const level = Number(match[1]);
@@ -13,5 +14,7 @@ export function parseRoute(hash: string): Route {
 }
 
 export function formatRoute(route: Route): string {
-  return route.page === 'home' ? '#/' : `#/level/${route.level}/${route.page}`;
+  if (route.page === 'home') return '#/';
+  if (route.page === 'chart') return '#/chart';
+  return `#/level/${route.level}/${route.page}`;
 }

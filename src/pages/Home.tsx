@@ -11,6 +11,9 @@ export default function Home() {
     <main className="page">
       <h1>ギターコード練習</h1>
       <p className="muted">コードの形と、各弦で鳴っている音をセットで覚えよう。</p>
+      <div className="actions">
+        <a className="button secondary" href={formatRoute({ page: 'chart' })}>コード早見表</a>
+      </div>
       <div className="level-grid">
         {LEVELS.map((level) => {
           const record = progress[level];
