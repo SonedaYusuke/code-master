@@ -3,10 +3,16 @@ import type { Chord, Level } from '../model';
 export const QUESTION_COUNT = 10;
 export const CHOICE_COUNT = 4;
 
+/** choice: コード名の4択 / build: ルート4択 → タイプ4択 */
+export type QuizMode = 'choice' | 'build';
+
+export const MODE_LABELS: Record<QuizMode, string> = { choice: '4択', build: 'ルート＋タイプ' };
+
 export type Question = { answer: Chord; choices: Chord[] };
 
 export type QuizResult = {
   level: Level;
+  mode: QuizMode;
   /** 正答率（%） */
   score: number;
   points: number;

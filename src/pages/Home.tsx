@@ -7,6 +7,7 @@ import { MAX_LIVES, MAX_QUESTIONS } from '../lib/challenge';
 
 export default function Home() {
   const [progress] = useState(() => loadProgress());
+  const [buildProgress] = useState(() => loadProgress(undefined, 'build'));
 
   return (
     <main className="page">
@@ -25,17 +26,22 @@ export default function Home() {
       <div className="level-grid">
         {LEVELS.map((level) => {
           const record = progress[level];
+          const buildRecord = buildProgress[level];
           return (
             <section key={level} className="level-card">
               <h2>Lv{level} {LEVEL_INFO[level].title}</h2>
               <p className="muted">{LEVEL_INFO[level].description}</p>
               <p>
-                {record ? `最高正答率 ${record.bestScore}% / ハイスコア ${record.bestPoints.toLocaleString('ja-JP')}pt` : '未挑戦'}
+                4択: {record ? `最高正答率 ${record.bestScore}% / ハイスコア ${record.bestPoints.toLocaleString('ja-JP')}pt` : '未挑戦'}
                 {record?.cleared && <span className="badge">クリア済み</span>}
+              </p>
+              <p>
+                ルート＋タイプ: {buildRecord ? `ハイスコア ${buildRecord.bestPoints.toLocaleString('ja-JP')}pt` : '未挑戦'}
               </p>
               <div className="actions">
                 <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習</a>
-                <a className="button" href={formatRoute({ page: 'quiz', level })}>クイズ</a>
+                <a className="button" href={formatRoute({ page: 'quiz', level })}>4択</a>
+                <a className="button" href={formatRoute({ page: 'build', level })}>ルート＋タイプ</a>
               </div>
             </section>
           );

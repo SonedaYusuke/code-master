@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import type { Level } from '../model';
 import { LEVEL_INFO } from '../data/chords';
 import { CLEAR_THRESHOLD } from '../lib/progress';
-import type { QuizResult } from '../lib/quiz';
+import { MODE_LABELS, type QuizResult } from '../lib/quiz';
 import { formatRoute } from '../lib/route';
 import { navigate } from '../router';
 import ChordCard from '../components/ChordCard';
@@ -22,6 +22,7 @@ export default function Result({ level, result }: Props) {
     <main className="page">
       <a className="back" href={formatRoute({ page: 'home' })}>← ホーム</a>
       <h1>Lv{level} {LEVEL_INFO[level].title} の結果</h1>
+      <p className="muted">{MODE_LABELS[result.mode]}</p>
       {result.newHighScore && <p className="high-score">ハイスコア更新！</p>}
       <p className="score">{result.points.toLocaleString('ja-JP')} pt</p>
       <p>
@@ -30,7 +31,7 @@ export default function Result({ level, result }: Props) {
       </p>
       <p>最大コンボ {result.maxCombo}</p>
       <div className="actions">
-        <a className="button" href={formatRoute({ page: 'quiz', level })}>もう一度</a>
+        <a className="button" href={formatRoute({ page: result.mode === 'build' ? 'build' : 'quiz', level })}>もう一度</a>
         <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習に戻る</a>
       </div>
       {result.wrong.length > 0 && (

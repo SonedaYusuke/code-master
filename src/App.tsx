@@ -28,7 +28,9 @@ export default function App() {
       return <Study key={route.level} level={route.level} />;
     case 'quiz':
       // key でレベルが変わったときに問題を作り直す
-      return <Quiz key={route.level} level={route.level} onFinish={handleFinish} />;
+      return <Quiz key={`${route.level}-choice`} level={route.level} mode="choice" onFinish={handleFinish} />;
+    case 'build':
+      return <Quiz key={`${route.level}-build`} level={route.level} mode="build" onFinish={handleFinish} />;
     case 'chart':
       return <Chart />;
     case 'challenge':

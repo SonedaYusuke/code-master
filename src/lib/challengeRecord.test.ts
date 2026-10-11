@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ChartType } from '../data/chart';
-import { CHALLENGE_STORAGE_KEY, loadChallengeBest, saveChallengeResult, selectionKey } from './challengeRecord';
+import { CHALLENGE_STORAGE_KEY, challengeRecordKey, loadChallengeBest, saveChallengeResult, selectionKey } from './challengeRecord';
 
 function memoryStorage(initial: string | null = null) {
   const data = new Map<string, string>();
@@ -15,6 +15,14 @@ describe('selectionKey', () => {
   it('選んだ順番に関係なく、タイプ順の同じキーになる', () => {
     expect(selectionKey(new Set<ChartType>(['m7', '', 'm']))).toBe('M,m,m7');
     expect(selectionKey(new Set<ChartType>(['m', 'm7', '']))).toBe('M,m,m7');
+  });
+});
+
+describe('challengeRecordKey', () => {
+  it('ルート＋タイプのモードは、4択と別の記録にする', () => {
+    const types = new Set<ChartType>(['', 'm']);
+    expect(challengeRecordKey(types, 'choice')).toBe('M,m');
+    expect(challengeRecordKey(types, 'build')).toBe('build:M,m');
   });
 });
 

@@ -1,4 +1,5 @@
 import { CHART_TYPES, CHART_TYPE_LABELS, type ChartType } from '../data/chart';
+import type { QuizMode } from './quiz';
 
 type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
 
@@ -15,6 +16,12 @@ function defaultStorage(): StorageLike | null {
 /** タイプの組み合わせごとに記録を分けるためのキー（例: "M,m,m7"） */
 export function selectionKey(types: ReadonlySet<ChartType>): string {
   return CHART_TYPES.filter((type) => types.has(type)).map((type) => CHART_TYPE_LABELS[type]).join(',');
+}
+
+/** 4択の記録は以前からのキーのまま、ルート＋タイプは別のキーにする */
+export function challengeRecordKey(types: ReadonlySet<ChartType>, mode: QuizMode): string {
+  const key = selectionKey(types);
+  return mode === 'build' ? `build:${key}` : key;
 }
 
 function loadAll(storage: StorageLike | null): Record<string, number> {

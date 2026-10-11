@@ -52,6 +52,17 @@ describe('loadProgress', () => {
   });
 });
 
+describe('モードごとの記録', () => {
+  it('4択とルート＋タイプの記録は別々に保存する', () => {
+    const storage = memoryStorage();
+    saveResult(1, { score: 90, points: 2000 }, storage, 'choice');
+    saveResult(1, { score: 60, points: 3000 }, storage, 'build');
+    expect(loadProgress(storage, 'choice')[1]).toEqual({ bestScore: 90, bestPoints: 2000, cleared: true });
+    expect(loadProgress(storage, 'build')[1]).toEqual({ bestScore: 60, bestPoints: 3000, cleared: false });
+    expect(loadProgress(storage)[1]?.bestPoints).toBe(2000);
+  });
+});
+
 describe('saveResult', () => {
   it('80% 以上でクリアになる', () => {
     expect(saveResult(2, { score: 80, points: 0 }, memoryStorage()).progress[2]?.cleared).toBe(true);

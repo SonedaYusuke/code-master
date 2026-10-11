@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
+import type { Note } from '../model';
 import { CHART_TYPES, CHART_TYPE_LABELS, type ChartType } from '../data/chart';
 import { MAX_LIVES, MAX_QUESTIONS, buildPool, isFinished, nextQuestion, type ChallengeItem } from '../lib/challenge';
-import { loadChallengeBest, saveChallengeResult, selectionKey } from '../lib/challengeRecord';
-import { pointsFor } from '../lib/scoring';
+import { challengeRecordKey, loadChallengeBest, saveChallengeResult, selectionKey } from '../lib/challengeRecord';
+import { buildQuestion } from '../lib/buildQuestion';
+import { MODE_LABELS, type QuizMode } from '../lib/quiz';
+import { pointsFor, timeLimitFor } from '../lib/scoring';
 import { formatRoute } from '../lib/route';
 import ChordDiagram from '../components/ChordDiagram';
 import TimerBar from '../components/TimerBar';
+import BuildAnswer from '../components/BuildAnswer';
 import { useCountdown } from '../hooks/useCountdown';
 import { useQuestionTimer } from '../hooks/useQuestionTimer';
 
@@ -24,11 +28,13 @@ type Summary = {
 
 export default function Challenge() {
   const [types, setTypes] = useState<ReadonlySet<ChartType>>(new Set(DEFAULT_TYPES));
+  const [mode, setMode] = useState<QuizMode>('choice');
   const [phase, setPhase] = useState<'setup' | 'playing' | 'result'>('setup');
   const [run, setRun] = useState(0);
   const [summary, setSummary] = useState<Summary | null>(null);
   const pool = useMemo(() => buildPool(types), [types]);
-  const recordKey = selectionKey(types);
+  const recordKey = challengeRecordKey(types, mode);
+  const poolTypes = CHART_TYPES.filter((type) => types.has(type));
 
   function toggle(type: ChartType) {
     setTypes((current) => {
@@ -49,7 +55,9 @@ export default function Challenge() {
     setPhase('result');
   }
 
-  if (phase === 'playing') return <ChallengeGame key={run} pool={pool} recordKey={recordKey} onFinish={finish} />;
+  if (phase === 'playing') {
+    return <ChallengeGame key={run} pool={pool} poolTypes={poolTypes} mode={mode} recordKey={recordKey} onFinish={finish} />;
+  }
 
   return (
     <main className="page">
@@ -62,7 +70,7 @@ export default function Challenge() {
           {summary.newHighScore && <p className="high-score">ハイスコア更新！</p>}
           <p className="score">{summary.points.toLocaleString('ja-JP')} pt</p>
           <p>{summary.answered} 問中 {summary.correct} 問正解 / 最大コンボ {summary.maxCombo}</p>
-          <p className="muted">出題タイプ: {recordKey} / ハイスコア {summary.best.toLocaleString('ja-JP')}pt</p>
+          <p className="muted">{MODE_LABELS[mode]} / 出題タイプ: {selectionKey(types)} / ハイスコア {summary.best.toLocaleString('ja-JP')}pt</p>
           <div className="actions">
             <button className="button" onClick={start}>もう一度</button>
             <button className="button secondary" onClick={() => setPhase('setup')}>タイプを選び直す</button>
@@ -73,6 +81,14 @@ export default function Challenge() {
           <p className="muted">
             選んだタイプのコードからランダムに出題します。ライフは {MAX_LIVES} つで、不正解か時間切れで1つ減ります。最大 {MAX_QUESTIONS} 問。
           </p>
+          <h2 style={{ marginTop: 20 }}>答え方</h2>
+          <div className="mode-toggle" role="group" aria-label="答え方">
+            {(Object.keys(MODE_LABELS) as QuizMode[]).map((m) => (
+              <button key={m} className={mode === m ? 'chip selected' : 'chip'} aria-pressed={mode === m} onClick={() => setMode(m)}>
+                {MODE_LABELS[m]}（{timeLimitFor(m) / 1000}秒）
+              </button>
+            ))}
+          </div>
           <h2 style={{ marginTop: 20 }}>出題するタイプ</h2>
           <div className="type-picker" role="group" aria-label="出題するタイプ">
             {CHART_TYPES.map((type) => (
@@ -103,30 +119,45 @@ export default function Challenge() {
   );
 }
 
-type GameProps = { pool: ChallengeItem[]; recordKey: string; onFinish: (summary: Summary) => void };
+type GameProps = {
+  pool: ChallengeItem[];
+  poolTypes: ChartType[];
+  mode: QuizMode;
+  recordKey: string;
+  onFinish: (summary: Summary) => void;
+};
 
-/** 回答結果。choice が null なら時間切れ */
-type Answer = { choice: string | null; points: number };
+/** 回答結果。choice / pickedType が null なら時間切れ */
+type Answer = { correct: boolean; timedOut: boolean; points: number; choice: string | null; pickedType: ChartType | null };
 
-function ChallengeGame({ pool, recordKey, onFinish }: GameProps) {
+function createQuestion(pool: ChallengeItem[], poolTypes: ChartType[], previous: ChallengeItem | null) {
+  const question = nextQuestion(pool, previous);
+  const { root, type } = question.item;
+  return { ...question, build: buildQuestion({ root, type, preferFlat: false }, poolTypes) };
+}
+
+function ChallengeGame({ pool, poolTypes, mode, recordKey, onFinish }: GameProps) {
   const countdown = useCountdown();
-  const [question, setQuestion] = useState(() => nextQuestion(pool, null));
+  const [question, setQuestion] = useState(() => createQuestion(pool, poolTypes, null));
   const [number, setNumber] = useState(1);
   const [answer, setAnswer] = useState<Answer | null>(null);
+  const [pickedRoot, setPickedRoot] = useState<Note | null>(null);
   const [lives, setLives] = useState(MAX_LIVES);
   const [points, setPoints] = useState(0);
   const [combo, setCombo] = useState(0);
   const [maxCombo, setMaxCombo] = useState(0);
   const [correct, setCorrect] = useState(0);
 
+  const timeLimitMs = timeLimitFor(mode);
   const playing = countdown <= 0;
   const answered = answer !== null;
-  const isCorrect = answer?.choice === question.item.name;
-  const { remainingMs, stop } = useQuestionTimer(playing && !answered, number);
-
-  useEffect(() => {
-    if (playing && !answered && remainingMs <= 0) resolve(null);
-  }, [playing, answered, remainingMs]);
+  const isCorrect = answer?.correct ?? false;
+  const { remainingMs, stop } = useQuestionTimer(
+    playing && !answered,
+    number,
+    () => resolve(false, { choice: null, pickedType: null }),
+    timeLimitMs,
+  );
 
   // 正解したら少し待って自動で次へ
   useEffect(() => {
@@ -135,18 +166,22 @@ function ChallengeGame({ pool, recordKey, onFinish }: GameProps) {
     return () => clearTimeout(timer);
   }, [answered, isCorrect]);
 
-  function resolve(choice: string | null) {
+  function resolve(right: boolean, picks: Pick<Answer, 'choice' | 'pickedType'>) {
     if (answered) return;
     const remaining = stop();
-    const right = choice === question.item.name;
     const nextCombo = right ? combo + 1 : 0;
-    const gained = pointsFor(right, remaining, nextCombo);
-    setAnswer({ choice, points: gained });
+    const gained = pointsFor(right, remaining, nextCombo, timeLimitMs);
+    setAnswer({ correct: right, timedOut: remaining <= 0, points: gained, ...picks });
     setPoints((p) => p + gained);
     setCombo(nextCombo);
     setMaxCombo((m) => Math.max(m, nextCombo));
     if (right) setCorrect((n) => n + 1);
     else setLives((n) => n - 1);
+  }
+
+  function pickType(type: ChartType) {
+    const right = pickedRoot === question.build.root && type === question.build.type;
+    resolve(right, { choice: null, pickedType: type });
   }
 
   function next() {
@@ -155,9 +190,10 @@ function ChallengeGame({ pool, recordKey, onFinish }: GameProps) {
       onFinish({ points, correct, answered: number, maxCombo, completed: lives > 0, newHighScore, best });
       return;
     }
-    setQuestion(nextQuestion(pool, question.item));
+    setQuestion(createQuestion(pool, poolTypes, question.item));
     setNumber((n) => n + 1);
     setAnswer(null);
+    setPickedRoot(null);
   }
 
   function choiceClass(choice: string): string {
@@ -171,6 +207,7 @@ function ChallengeGame({ pool, recordKey, onFinish }: GameProps) {
     <main className="page quiz">
       <a className="back" href={formatRoute({ page: 'home' })}>← ホーム</a>
       <h1>チャレンジモード</h1>
+      <p className="muted">{MODE_LABELS[mode]}</p>
 
       {!playing ? (
         <div key={countdown} className="countdown" aria-live="assertive">{countdown}</div>
@@ -189,21 +226,37 @@ function ChallengeGame({ pool, recordKey, onFinish }: GameProps) {
             </span>
           </div>
           <div className="combo-row">{combo >= 2 && <span className="combo">{combo} コンボ！</span>}</div>
-          <TimerBar remainingMs={remainingMs} />
+          <TimerBar remainingMs={remainingMs} timeLimitMs={timeLimitMs} />
           <ChordDiagram chord={question.item.voicing} showNotes={answered} />
-          <div className="choices">
-            {question.choices.map((choice) => (
-              <button key={choice} className={choiceClass(choice)} disabled={answered} onClick={() => resolve(choice)}>
-                {choice}
-              </button>
-            ))}
-          </div>
+          {mode === 'choice' ? (
+            <div className="choices">
+              {question.choices.map((choice) => (
+                <button
+                  key={choice}
+                  className={choiceClass(choice)}
+                  disabled={answered}
+                  onClick={() => resolve(choice === question.item.name, { choice, pickedType: null })}
+                >
+                  {choice}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <BuildAnswer
+              question={question.build}
+              pickedRoot={pickedRoot}
+              pickedType={answer?.pickedType ?? null}
+              answered={answered}
+              onPickRoot={setPickedRoot}
+              onPickType={pickType}
+            />
+          )}
           {answered && (
             <>
               <p className={isCorrect ? 'feedback correct' : 'feedback wrong'}>
                 {isCorrect
                   ? `正解！ +${answer.points}pt`
-                  : `${answer.choice === null ? '時間切れ' : '不正解'}… 正解は ${question.item.name}（${question.item.voicing.label}）`}
+                  : `${answer.timedOut ? '時間切れ' : '不正解'}… 正解は ${question.item.name}（${question.item.voicing.label}）`}
               </p>
               {!isCorrect && (
                 <div className="actions" style={{ justifyContent: 'center' }}>

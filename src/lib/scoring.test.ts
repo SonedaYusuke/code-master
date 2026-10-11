@@ -24,6 +24,11 @@ describe('pointsFor', () => {
     expect(pointsFor(true, TIME_LIMIT_MS, 99)).toBe(300);
   });
 
+  it('制限時間を渡すと、その長さを基準に時間ボーナスを計算する', () => {
+    expect(pointsFor(true, 10000, 1, 10000)).toBe(200);
+    expect(pointsFor(true, 5000, 1, 10000)).toBe(150);
+  });
+
   it('範囲外の残り時間は 0〜制限時間に丸める', () => {
     expect(pointsFor(true, -500, 1)).toBe(100);
     expect(pointsFor(true, TIME_LIMIT_MS * 2, 1)).toBe(200);

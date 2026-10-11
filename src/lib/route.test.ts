@@ -6,6 +6,7 @@ describe('parseRoute', () => {
     ['#/level/1/study', { page: 'study', level: 1 }],
     ['#/level/3/quiz', { page: 'quiz', level: 3 }],
     ['#/level/5/result', { page: 'result', level: 5 }],
+    ['#/level/2/build', { page: 'build', level: 2 }],
     ['#/chart', { page: 'chart' }],
     ['#/challenge', { page: 'challenge' }],
   ])('%s を解析する', (hash, expected) => {

@@ -269,3 +269,9 @@ a { color: var(--text); }
 .heart.lost { color: transparent; }
 .challenge-result { text-align: center; }
 .challenge-result .actions { justify-content: center; }
+
+/* ルート＋タイプのモード */
+.build-step { margin-top: 16px; font-weight: 800; text-align: left; }
+.build-step + .choices { margin-top: 8px; }
+.choice.picked { background: var(--yellow); }
+.mode-toggle { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
