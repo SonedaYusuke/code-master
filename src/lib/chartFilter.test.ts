@@ -51,7 +51,7 @@ describe('filterChart', () => {
 
   it('省略形を選ぶと省略形の形だけを残す', () => {
     const result = filterChart(CHART, { types: new Set(), frequencies: new Set(), simplified: true }).flatMap((s) => s.chords);
-    expect(result.map((c) => c.id)).toEqual(['F', 'Fm', 'Fmaj7', 'F#m']);
+    expect(result.map((c) => c.id)).toEqual(expect.arrayContaining(['F', 'Fm', 'Fmaj7', 'F#m', 'F#m7', 'Bm7']));
     expect(result.every((c) => c.voicings.every((v) => v.label === '省略形'))).toBe(true);
   });
 

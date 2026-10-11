@@ -101,6 +101,16 @@ describe('CHART', () => {
     expect(voicing('F', '省略形')).toMatchObject({ frets: [null, null, 3, 2, 1, 1] });
   });
 
+  it('m7 の省略形を全ルートに載せる（ルートが開放弦になる位置は除く）', () => {
+    const simplifiedFrets = (id: string) => byId(id).voicings.filter((v) => v.label === '省略形').map((v) => v.frets);
+    expect(simplifiedFrets('F#m7')).toContainEqual([2, null, 2, 2, 2, null]);
+    expect(simplifiedFrets('Bm7')).toEqual([[null, 2, 0, 2, 0, 2], [7, null, 7, 7, 7, null]]);
+    expect(simplifiedFrets('Em7')).not.toContainEqual([0, null, 0, 0, 0, null]);
+    for (const { root } of CHART) {
+      if (root !== 'E') expect(simplifiedFrets(`${root}m7`)).not.toHaveLength(0);
+    }
+  });
+
   it('頻出コードは一番低い形と省略形が頻出', () => {
     expect(byId('F#m').voicings.map((v) => v.frequency)).toEqual(['common', 'common', undefined, undefined]);
     expect(voicing('Cadd9', 'オープン')!.frequency).toBe('common');

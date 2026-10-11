@@ -13,7 +13,7 @@ const EXPECTED_NAMES: Record<Level, string[]> = {
   6: ['Asus4', 'Dsus4', 'Esus4', 'Csus4', 'Asus2', 'Dsus2', 'Cadd9', 'Gadd9', 'Eadd9', 'Aadd9'],
   7: ['A6', 'C6', 'G6', 'E9', 'C9', 'G9', 'Gsus4', 'Bsus4', 'Fadd9', 'Dadd9'],
   8: ['Am7♭5', 'Bm7♭5', 'F#m7♭5', 'Bdim', 'Cdim', 'C#dim7', 'Gdim7', 'Edim7', 'Caug', 'Eaug'],
-  9: ['F', 'Fm', 'FM7', 'F#m'],
+  9: ['F', 'Fm', 'FM7', 'F#m', 'F#m7', 'Bm7'],
 };
 
 const byLevelAndName = (level: Level, name: string) => chordsOfLevel(level).find((c) => c.name === name)!;

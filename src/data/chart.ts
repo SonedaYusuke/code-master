@@ -154,7 +154,18 @@ const SIMPLIFIED_SHAPES: Record<string, Pick<ChordShape, 'frets' | 'fingers' | '
   Fm: { frets: [null, null, 3, 1, 1, 1], fingers: [null, null, 3, 1, 1, 1], barre: { fret: 1, fromString: 3, toString: 1 } },
   Fmaj7: { frets: [null, null, 3, 2, 1, 0], fingers: [null, null, 3, 2, 1, null] },
   'F#m': { frets: [null, null, 4, 2, 2, 2], fingers: [null, null, 3, 1, 1, 1], barre: { fret: 2, fromString: 3, toString: 1 } },
+  Bm7: { frets: [null, 2, 0, 2, 0, 2], fingers: [null, 2, null, 3, null, 4] },
 };
+
+/** 全ルートに当てはめる省略形。ルートが開放弦になる位置は別の形と重なるので載せない */
+const SIMPLIFIED_FAMILIES: MovableFamily[] = [
+  {
+    // 6弦ルートの m7 から5弦と1弦を抜いた形（例: F#m7 = 2x222x）
+    label: '省略形',
+    openNote: 'E',
+    shapes: { m7: { frets: [0, null, 0, 0, 0, null], fingers: [1, null, 1, 1, 1, null] } },
+  },
+];
 
 const MAX_FRET_WITHOUT_OFFSET = 5;
 
@@ -223,6 +234,12 @@ function buildChord(root: Note, type: ChartType): ChartChord {
   // 同じポジションならバレーの形を先に並べるため、最後に入れる
   const simplified = SIMPLIFIED_SHAPES[id];
   if (simplified) candidates.push(toVoicing('省略形', simplified));
+  for (const family of SIMPLIFIED_FAMILIES) {
+    const shape = family.shapes[type];
+    if (!shape) continue;
+    const rootFret = placeRoot(shape, (NOTES.indexOf(root) - NOTES.indexOf(family.openNote) + OCTAVE) % OCTAVE);
+    if (rootFret !== 0) candidates.push(toVoicing(family.label, transpose(shape, rootFret)));
+  }
 
   const seen = new Set<string>();
   const chordFrequency = frequencyOf(id);

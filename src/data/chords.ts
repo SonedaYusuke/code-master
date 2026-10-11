@@ -93,6 +93,8 @@ const LEVEL_PICKS: Record<Level, Pick[]> = {
     { chord: 'Fm', label: '省略形' },
     { chord: 'Fmaj7', label: '省略形' },
     { chord: 'F#m', label: '省略形' },
+    { chord: 'F#m7', label: '省略形' },
+    { chord: 'Bm7', label: '省略形' },
   ],
 };
 
