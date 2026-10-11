@@ -1,0 +1,35 @@
+import { useState } from 'react';
+import { LEVELS } from '../model';
+import { LEVEL_INFO } from '../data/chords';
+import { loadProgress } from '../lib/progress';
+import { formatRoute } from '../lib/route';
+
+export default function Home() {
+  const [progress] = useState(() => loadProgress());
+
+  return (
+    <main className="page">
+      <h1>ギターコード練習</h1>
+      <p className="muted">コードの形と、各弦で鳴っている音をセットで覚えよう。</p>
+      <div className="level-grid">
+        {LEVELS.map((level) => {
+          const record = progress[level];
+          return (
+            <section key={level} className="level-card">
+              <h2>Lv{level} {LEVEL_INFO[level].title}</h2>
+              <p className="muted">{LEVEL_INFO[level].description}</p>
+              <p>
+                {record ? `最高正答率 ${record.bestScore}%` : '未挑戦'}
+                {record?.cleared && <span className="badge">クリア済み</span>}
+              </p>
+              <div className="actions">
+                <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習</a>
+                <a className="button" href={formatRoute({ page: 'quiz', level })}>クイズ</a>
+              </div>
+            </section>
+          );
+        })}
+      </div>
+    </main>
+  );
+}
