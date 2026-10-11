@@ -3,11 +3,21 @@ import { chordTones, sortFromRoot } from '../lib/notes';
 
 /** 各ルートの中での並び順 */
 export const CHART_TYPES = ['', 'm', '7', 'm7', 'maj7', 'sus4', 'add9'] as const;
-type ChartType = (typeof CHART_TYPES)[number];
+export type ChartType = (typeof CHART_TYPES)[number];
+
+export const CHART_TYPE_LABELS: Record<ChartType, string> = {
+  '': 'M',
+  m: 'm',
+  '7': '7',
+  m7: 'm7',
+  maj7: 'M7',
+  sus4: 'sus4',
+  add9: 'add9',
+};
 
 export type VoicingLabel = 'オープン' | '6弦ルート' | '5弦ルート' | '4弦ルート';
 export type Voicing = ChordShape & { label: VoicingLabel };
-export type ChartChord = { id: string; name: string; tones: Note[]; voicings: Voicing[] };
+export type ChartChord = { id: string; name: string; type: ChartType; tones: Note[]; voicings: Voicing[] };
 export type ChartSection = { root: Note; chords: ChartChord[] };
 
 /** ルートを 0 フレットとしたときの相対フレット。指 1 が人差し指のセーハ */
@@ -134,7 +144,7 @@ function buildChord(root: Note, type: ChartType): ChartChord {
     })
     .sort((a, b) => position(a) - position(b));
 
-  return { id, name: id, tones: sortFromRoot(root, voicings.flatMap(chordTones)), voicings };
+  return { id, name: id, type, tones: sortFromRoot(root, voicings.flatMap(chordTones)), voicings };
 }
 
 export const CHART: ChartSection[] = NOTES.map((root) => ({

@@ -102,20 +102,31 @@ a { color: var(--accent); }
 .feedback.wrong { color: var(--wrong); }
 .score { font-size: 2.4rem; font-weight: bold; margin: 8px 0; }
 
-.root-nav {
+.chart-toolbar {
   position: sticky;
   top: 0;
   z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
   margin: 16px -16px 0;
   padding: 10px 16px;
   background: var(--bg);
   border-bottom: 1px solid var(--line);
 }
+.root-nav, .type-filter { display: flex; flex-wrap: wrap; gap: 6px; }
+.type-filter { margin-top: 8px; }
+.chip {
+  padding: 4px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.chip.selected { border-color: var(--accent); background: var(--accent); color: var(--accent-text); }
+.chip.clear { border-style: dashed; color: var(--muted); }
 .root-nav .button { padding: 6px 12px; min-width: 48px; }
-.chart-section { margin-top: 32px; scroll-margin-top: 110px; }
+.chart-section { margin-top: 32px; scroll-margin-top: 150px; }
 .chart-root { font-size: 1.4rem; margin: 0; padding-bottom: 4px; border-bottom: 2px solid var(--accent); }
 
 .chart-chord {
