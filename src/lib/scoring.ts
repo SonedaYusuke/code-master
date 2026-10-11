@@ -9,10 +9,10 @@ export function timeLimitFor(mode: QuizMode): number {
   return mode === 'build' ? BUILD_TIME_LIMIT_MS : TIME_LIMIT_MS;
 }
 
-const BASE_POINTS = 100;
-const MAX_TIME_BONUS = 100;
-const COMBO_STEP = 20;
-const MAX_COMBO_BONUS = 100;
+export const BASE_POINTS = 100;
+export const MAX_TIME_BONUS = 100;
+export const COMBO_STEP = 20;
+export const MAX_COMBO_BONUS = 100;
 
 /** combo は、この回答を含めた連続正解数 */
 export function pointsFor(correct: boolean, remainingMs: number, combo: number, timeLimitMs = TIME_LIMIT_MS): number {

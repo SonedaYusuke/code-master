@@ -4,9 +4,11 @@ import { LEVEL_INFO } from '../data/chords';
 import { formatRoute } from '../lib/route';
 import { MAX_LIVES, MAX_QUESTIONS } from '../lib/challenge';
 import QuizModeDialog from '../components/QuizModeDialog';
+import RulesDialog from '../components/RulesDialog';
 
 export default function Home() {
   const [dialogLevel, setDialogLevel] = useState<Level | null>(null);
+  const [rulesOpen, setRulesOpen] = useState(false);
 
   return (
     <main className="page">
@@ -35,6 +37,8 @@ export default function Home() {
         ))}
       </div>
       <QuizModeDialog level={dialogLevel} onClose={() => setDialogLevel(null)} />
+      <button className="help-button" aria-label="遊び方" onClick={() => setRulesOpen(true)}>?</button>
+      <RulesDialog open={rulesOpen} onClose={() => setRulesOpen(false)} />
     </main>
   );
 }

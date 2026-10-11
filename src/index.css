@@ -292,6 +292,30 @@ a { color: var(--text); }
 .mode-option-title { font-size: 1.1rem; font-weight: 800; }
 .mode-option-record { font-size: 0.85rem; font-weight: 700; }
 
+/* 遊び方 */
+.help-button {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 48px;
+  height: 48px;
+  border: var(--border);
+  border-radius: 50%;
+  background: var(--yellow);
+  box-shadow: var(--shadow-sm);
+  color: var(--ink);
+  font-size: 1.4rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+.help-button:hover { transform: translate(1px, 1px); }
+.help-button:active { transform: translate(4px, 4px); box-shadow: none; }
+.rules { max-height: calc(100dvh - 64px); overflow-y: auto; }
+.rules h3 { margin: 16px 0 4px; }
+.rules ul { margin: 4px 0; padding-left: 1.2em; }
+.rules li { margin: 2px 0; }
+
 /* 結果画面 */
 .result-card {
   max-width: 520px;
