@@ -67,6 +67,7 @@ a { color: var(--text); }
   padding: 16px;
 }
 .chord-card { text-align: center; }
+.chord-card h2 .freq-badge { margin-left: 8px; vertical-align: middle; }
 
 
 .chord-diagram { width: 100%; max-width: 180px; height: auto; display: block; margin: 0 auto; }
@@ -78,6 +79,7 @@ a { color: var(--text); }
 .chord-diagram .note { fill: var(--pink-text); font-size: 12px; font-weight: 800; }
 
 .quiz { max-width: 480px; margin: 0 auto; text-align: center; }
+.quiz .back { display: block; width: fit-content; }
 .choices { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
 .choice {
   padding: 14px;
@@ -164,6 +166,7 @@ a { color: var(--text); }
 }
 .freq-badge.freq-top, .chip.freq-top.selected { background: var(--red); }
 .freq-badge.freq-common, .chip.freq-common.selected { background: var(--yellow); }
+.freq-badge.simplified, .chip.simplified.selected { background: var(--green); }
 .root-nav .button:disabled { opacity: 0.35; box-shadow: none; }
 
 /* クイズのゲーム要素 */

@@ -46,7 +46,7 @@ function frequencyOf(id: string): Frequency | undefined {
 /** コード名の表記がタイプの id と違うもの */
 const NAME_SUFFIX: Partial<Record<ChartType, string>> = { maj7: 'M7', m7b5: 'm7♭5' };
 
-export type VoicingLabel = 'オープン' | '6弦ルート' | '5弦ルート' | '4弦ルート';
+export type VoicingLabel = 'オープン' | '6弦ルート' | '5弦ルート' | '4弦ルート' | '省略形';
 export type Voicing = ChordShape & { label: VoicingLabel; frequency?: Frequency };
 export type ChartChord = { id: string; name: string; type: ChartType; tones: Note[]; voicings: Voicing[] };
 export type ChartSection = { root: Note; chords: ChartChord[] };
@@ -148,6 +148,25 @@ const OPEN_SHAPES: Record<string, Pick<ChordShape, 'frets' | 'fingers'>> = {
   Gadd9: { frets: [3, 2, 0, 2, 0, 3], fingers: [3, 2, null, 1, null, 4] },
 };
 
+/** バレーを避けて弦を減らした、よく使われる押さえ方 */
+const SIMPLIFIED_SHAPES: Record<string, Pick<ChordShape, 'frets' | 'fingers' | 'barre'>> = {
+  F: { frets: [null, null, 3, 2, 1, 1], fingers: [null, null, 3, 2, 1, 1], barre: { fret: 1, fromString: 2, toString: 1 } },
+  Fm: { frets: [null, null, 3, 1, 1, 1], fingers: [null, null, 3, 1, 1, 1], barre: { fret: 1, fromString: 3, toString: 1 } },
+  Fmaj7: { frets: [null, null, 3, 2, 1, 0], fingers: [null, null, 3, 2, 1, null] },
+  'F#m': { frets: [null, null, 4, 2, 2, 2], fingers: [null, null, 3, 1, 1, 1], barre: { fret: 2, fromString: 3, toString: 1 } },
+  Bm7: { frets: [null, 2, 0, 2, 0, 2], fingers: [null, 2, null, 3, null, 4] },
+};
+
+/** 全ルートに当てはめる省略形。ルートが開放弦になる位置は別の形と重なるので載せない */
+const SIMPLIFIED_FAMILIES: MovableFamily[] = [
+  {
+    // 6弦ルートの m7 から5弦と1弦を抜いた形（例: F#m7 = 2x222x）
+    label: '省略形',
+    openNote: 'E',
+    shapes: { m7: { frets: [0, null, 0, 0, 0, null], fingers: [1, null, 1, 1, 1, null] } },
+  },
+];
+
 const MAX_FRET_WITHOUT_OFFSET = 5;
 
 type Fingering = Omit<ChordShape, 'id' | 'name'>;
@@ -186,12 +205,13 @@ function position(voicing: Voicing): number {
 const COMMON_ALTERNATIVE_MAX_FRET = 7;
 
 /**
- * 形ごとの頻出度。一番低い形はコードの頻出度をそのまま使い、
+ * 形ごとの頻出度。一番低い形はコードの頻出度をそのまま使い、省略形は頻出にする。
  * 超頻出コードはさらに7フレット以内の6弦・5弦ルートの形を頻出にする
  */
 function voicingFrequency(chordFrequency: Frequency | undefined, voicing: Voicing, index: number): Frequency | undefined {
   if (!chordFrequency) return undefined;
   if (index === 0) return chordFrequency;
+  if (voicing.label === '省略形') return 'common';
   const isBarre = voicing.label === '6弦ルート' || voicing.label === '5弦ルート';
   if (chordFrequency === 'top' && isBarre && position(voicing) <= COMMON_ALTERNATIVE_MAX_FRET) return 'common';
   return undefined;
@@ -210,6 +230,15 @@ function buildChord(root: Note, type: ChartType): ChartChord {
     if (!shape) continue;
     const rootFret = placeRoot(shape, (NOTES.indexOf(root) - NOTES.indexOf(family.openNote) + OCTAVE) % OCTAVE);
     candidates.push(toVoicing(rootFret === 0 ? 'オープン' : family.label, transpose(shape, rootFret)));
+  }
+  // 同じポジションならバレーの形を先に並べるため、最後に入れる
+  const simplified = SIMPLIFIED_SHAPES[id];
+  if (simplified) candidates.push(toVoicing('省略形', simplified));
+  for (const family of SIMPLIFIED_FAMILIES) {
+    const shape = family.shapes[type];
+    if (!shape) continue;
+    const rootFret = placeRoot(shape, (NOTES.indexOf(root) - NOTES.indexOf(family.openNote) + OCTAVE) % OCTAVE);
+    if (rootFret !== 0) candidates.push(toVoicing(family.label, transpose(shape, rootFret)));
   }
 
   const seen = new Set<string>();

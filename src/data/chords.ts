@@ -3,9 +3,9 @@ import { CHART, type VoicingLabel } from './chart';
 
 export const LEVEL_INFO: Record<Level, { title: string; description: string }> = {
   1: { title: '必須コード', description: 'まず最初に覚えたい、開放弦を使った基本のコード。' },
-  2: { title: '定番のバレー', description: '最初の壁の F と B から始めて、よく登場するバレーコードを押さえます。' },
+  2: { title: '定番のバレー', description: '最初の壁の F と B から始めて、よく登場するバレーコードとその省略形を押さえます。' },
   3: { title: 'オープンの7th', description: '開放弦を使ったセブンスコード。ブルースやポップスでよく登場します。' },
-  4: { title: 'M7・m7', description: 'オープンとバレーで、メジャーセブンスとマイナーセブンスを押さえます。' },
+  4: { title: 'M7・m7', description: 'オープンとバレー、省略形で、メジャーセブンスとマイナーセブンスを押さえます。' },
   5: { title: 'バレーの7th', description: '6弦・5弦ルートのバレーで、いろいろなキーのセブンスを押さえます。' },
   6: { title: 'sus・add9', description: '開放弦の形で覚える、浮遊感のある sus と add9。' },
   7: { title: '6・9 とバレーの sus・add9', description: '6th・9th と、バレーで押さえる sus・add9。' },
@@ -21,8 +21,9 @@ const LEVEL_PICKS: Record<Level, Pick[]> = {
     { chord: 'A' }, { chord: 'Am' }, { chord: 'Dm' }, { chord: 'Em' },
   ],
   2: [
-    { chord: 'F' }, { chord: 'B' }, { chord: 'Bm' }, { chord: 'A#', name: 'B♭' }, { chord: 'F#m' },
-    { chord: 'Cm' }, { chord: 'Gm' }, { chord: 'C#m' }, { chord: 'Fm' },
+    { chord: 'F' }, { chord: 'F', label: '省略形' }, { chord: 'B' }, { chord: 'Bm' }, { chord: 'A#', name: 'B♭' },
+    { chord: 'F#m' }, { chord: 'F#m', label: '省略形' },
+    { chord: 'Cm' }, { chord: 'Gm' }, { chord: 'C#m' }, { chord: 'Fm' }, { chord: 'Fm', label: '省略形' },
     { chord: 'D#', label: '5弦ルート', name: 'E♭' }, { chord: 'G#', name: 'A♭' },
   ],
   3: [
@@ -35,10 +36,13 @@ const LEVEL_PICKS: Record<Level, Pick[]> = {
     { chord: 'Gmaj7', label: 'オープン' },
     { chord: 'Amaj7', label: 'オープン' },
     { chord: 'Fmaj7', label: '6弦ルート' },
+    { chord: 'Fmaj7', label: '省略形' },
     { chord: 'A#maj7', label: '5弦ルート', name: 'B♭M7' },
     { chord: 'F#m7', label: '6弦ルート' },
+    { chord: 'F#m7', label: '省略形' },
     { chord: 'Gm7', label: '6弦ルート' },
     { chord: 'Bm7', label: '5弦ルート' },
+    { chord: 'Bm7', label: '省略形' },
     { chord: 'Cm7', label: '5弦ルート' },
   ],
   5: [
@@ -97,7 +101,7 @@ function toChord(level: Level, { chord, label, name }: Pick): Chord {
   const voicing = label ? chartChord.voicings.find((v) => v.label === label) : chartChord.voicings[0];
   if (!voicing) throw new Error(`${chord} に ${label} の形がありません`);
   const { label: _label, frequency: _frequency, ...shape } = voicing;
-  return { ...shape, name: name ?? voicing.name, level };
+  return { ...shape, name: name ?? voicing.name, level, ...(voicing.label === '省略形' && { simplified: true as const }) };
 }
 
 export const CHORDS: Chord[] = (Object.keys(LEVEL_PICKS).map(Number) as Level[]).flatMap((level) =>

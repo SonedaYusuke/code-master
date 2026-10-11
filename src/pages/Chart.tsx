@@ -7,6 +7,7 @@ import {
   FREQUENCY_LABELS,
   type ChartType,
   type Frequency,
+  type Voicing,
 } from '../data/chart';
 import { filterChart } from '../lib/chartFilter';
 import { formatRoute } from '../lib/route';
@@ -14,6 +15,12 @@ import ChordDiagram from '../components/ChordDiagram';
 
 const sectionId = (root: Note) => `root-${root}`;
 const FREQUENCY_ORDER: Frequency[] = ['top', 'common'];
+
+/** 省略形は「省略」バッジで示すので、見出しは一番低い弦の何弦ルートかにする */
+function positionLabel(voicing: Voicing): string {
+  if (voicing.label !== '省略形') return voicing.label;
+  return `${6 - voicing.frets.findIndex((f) => f !== null)}弦ルート`;
+}
 
 function toggled<T>(current: ReadonlySet<T>, value: T): ReadonlySet<T> {
   const next = new Set(current);
@@ -25,13 +32,15 @@ function toggled<T>(current: ReadonlySet<T>, value: T): ReadonlySet<T> {
 export default function Chart() {
   const [types, setTypes] = useState<ReadonlySet<ChartType>>(new Set());
   const [frequencies, setFrequencies] = useState<ReadonlySet<Frequency>>(new Set());
-  const sections = filterChart(CHART, { types, frequencies });
+  const [simplified, setSimplified] = useState(false);
+  const sections = filterChart(CHART, { types, frequencies, simplified });
   const visibleRoots = new Set(sections.map((s) => s.root));
-  const filtering = types.size > 0 || frequencies.size > 0;
+  const filtering = types.size > 0 || frequencies.size > 0 || simplified;
 
   function clearFilter() {
     setTypes(new Set());
     setFrequencies(new Set());
+    setSimplified(false);
   }
 
   // href="#..." はハッシュルーティングとぶつかるので、ボタンでスクロールする
@@ -57,7 +66,7 @@ export default function Chart() {
             </button>
           ))}
         </nav>
-        <div className="type-filter" role="group" aria-label="頻出度とコードタイプで絞り込む">
+        <div className="type-filter" role="group" aria-label="頻出度・省略形とコードタイプで絞り込む">
           {FREQUENCY_ORDER.map((frequency) => (
             <button
               key={frequency}
@@ -68,6 +77,13 @@ export default function Chart() {
               {FREQUENCY_LABELS[frequency]}
             </button>
           ))}
+          <button
+            className={simplified ? 'chip simplified selected' : 'chip simplified'}
+            aria-pressed={simplified}
+            onClick={() => setSimplified((current) => !current)}
+          >
+            省略
+          </button>
           <span className="filter-divider" aria-hidden="true" />
           {CHART_TYPES.map((type) => (
             <button
@@ -100,7 +116,8 @@ export default function Chart() {
                   <figure key={voicing.id} className="voicing">
                     <ChordDiagram chord={voicing} showNotes />
                     <figcaption>
-                      {voicing.label}
+                      {positionLabel(voicing)}
+                      {voicing.label === '省略形' && <span className="freq-badge simplified">省略</span>}
                       {voicing.frequency && (
                         <span className={`freq-badge freq-${voicing.frequency}`}>{FREQUENCY_LABELS[voicing.frequency]}</span>
                       )}

@@ -6,9 +6,9 @@ import { expectedTones } from './expectedTones';
 
 const EXPECTED_NAMES: Record<Level, string[]> = {
   1: ['C', 'D', 'E', 'G', 'A', 'Am', 'Dm', 'Em'],
-  2: ['F', 'B', 'Bm', 'B♭', 'F#m', 'Cm', 'Gm', 'C#m', 'Fm', 'E♭', 'A♭'],
+  2: ['F', 'F', 'B', 'Bm', 'B♭', 'F#m', 'F#m', 'Cm', 'Gm', 'C#m', 'Fm', 'Fm', 'E♭', 'A♭'],
   3: ['A7', 'B7', 'C7', 'D7', 'E7', 'G7', 'Am7', 'Dm7', 'Em7'],
-  4: ['CM7', 'DM7', 'GM7', 'AM7', 'FM7', 'B♭M7', 'F#m7', 'Gm7', 'Bm7', 'Cm7'],
+  4: ['CM7', 'DM7', 'GM7', 'AM7', 'FM7', 'FM7', 'B♭M7', 'F#m7', 'F#m7', 'Gm7', 'Bm7', 'Bm7', 'Cm7'],
   5: ['F7', 'G7', 'A7', 'B♭7', 'B7', 'C7', 'D7', 'E7'],
   6: ['Asus4', 'Dsus4', 'Esus4', 'Csus4', 'Asus2', 'Dsus2', 'Cadd9', 'Gadd9', 'Eadd9', 'Aadd9'],
   7: ['A6', 'C6', 'G6', 'E9', 'C9', 'G9', 'Gsus4', 'Bsus4', 'Fadd9', 'Dadd9'],
@@ -31,11 +31,21 @@ describe('CHORDS', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('同じレベルに同じ名前のコードがない', () => {
+  it('同じレベルに同じ名前のコードがない（省略形とそれ以外の形は別に数える）', () => {
     for (const level of LEVELS) {
-      const names = chordsOfLevel(level).map((c) => c.name);
-      expect(new Set(names).size).toBe(names.length);
+      for (const simplified of [true, false]) {
+        const names = chordsOfLevel(level).filter((c) => !!c.simplified === simplified).map((c) => c.name);
+        expect(new Set(names).size).toBe(names.length);
+      }
     }
+  });
+
+  it('省略形は早見表の省略形の形を使う', () => {
+    const simplified = CHORDS.filter((c) => c.simplified);
+    expect(simplified.map((c) => [c.level, c.name])).toEqual([
+      [2, 'F'], [2, 'F#m'], [2, 'Fm'], [4, 'FM7'], [4, 'F#m7'], [4, 'Bm7'],
+    ]);
+    expect(chordsOfLevel(2).find((c) => c.simplified && c.name === 'F')!.frets).toEqual([null, null, 3, 2, 1, 1]);
   });
 
   it('すべてのレベルに説明がある', () => {

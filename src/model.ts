@@ -24,5 +24,5 @@ export type ChordShape = {
   baseFret?: number;
 };
 
-/** 学習・クイズ用のコード */
-export type Chord = ChordShape & { level: Level };
+/** 学習・クイズ用のコード。simplified は省略形の押さえ方 */
+export type Chord = ChordShape & { level: Level; simplified?: true };
