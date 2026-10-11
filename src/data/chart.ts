@@ -2,7 +2,7 @@ import { NOTES, type ChordShape, type Note } from '../model';
 import { chordTones, sortFromRoot } from '../lib/notes';
 
 /** 各ルートの中での並び順 */
-export const CHART_TYPES = ['', 'm', '7', 'm7', 'maj7', 'sus4', 'add9'] as const;
+export const CHART_TYPES = ['', 'm', '7', 'm7', 'maj7', 'sus4', 'add9', 'm7b5', 'dim', 'dim7', 'aug', '6', 'sus2', '9'] as const;
 export type ChartType = (typeof CHART_TYPES)[number];
 
 export const CHART_TYPE_LABELS: Record<ChartType, string> = {
@@ -13,14 +13,24 @@ export const CHART_TYPE_LABELS: Record<ChartType, string> = {
   maj7: 'M7',
   sus4: 'sus4',
   add9: 'add9',
+  m7b5: 'm7♭5',
+  dim: 'dim',
+  dim7: 'dim7',
+  aug: 'aug',
+  '6': '6',
+  sus2: 'sus2',
+  '9': '9',
 };
+
+/** コード名の表記がタイプの id と違うもの */
+const NAME_SUFFIX: Partial<Record<ChartType, string>> = { m7b5: 'm7♭5' };
 
 export type VoicingLabel = 'オープン' | '6弦ルート' | '5弦ルート' | '4弦ルート';
 export type Voicing = ChordShape & { label: VoicingLabel };
 export type ChartChord = { id: string; name: string; type: ChartType; tones: Note[]; voicings: Voicing[] };
 export type ChartSection = { root: Note; chords: ChartChord[] };
 
-/** ルートを 0 フレットとしたときの相対フレット。指 1 が人差し指のセーハ */
+/** ルートを 0 フレットとしたときの相対フレット（ルートより低いフレットは負の値）。指 1 が人差し指のセーハ */
 type MovableShape = {
   frets: (number | null)[];
   fingers: (number | null)[];
@@ -46,6 +56,13 @@ const FAMILIES: MovableFamily[] = [
       maj7: { frets: [0, null, 1, 1, 0, null], fingers: [1, null, 3, 4, 2, null] },
       sus4: { frets: [0, 2, 2, 2, 0, 0], fingers: [1, 2, 3, 4, 1, 1], barre: { fromString: 6, toString: 1 } },
       add9: { frets: [0, 2, 4, 1, 0, 0], fingers: [1, 3, 4, 2, 1, 1], barre: { fromString: 6, toString: 1 } },
+      m7b5: { frets: [0, null, 0, 0, -1, null], fingers: [2, null, 3, 4, 1, null] },
+      dim: { frets: [0, 1, 2, 0, null, null], fingers: [1, 2, 3, 1, null, null] },
+      dim7: { frets: [0, null, -1, 0, -1, null], fingers: [2, null, 1, 3, 1, null] },
+      aug: { frets: [0, null, 2, 1, 1, null], fingers: [1, null, 4, 2, 3, null] },
+      '6': { frets: [0, null, -1, 1, 0, null], fingers: [2, null, 1, 4, 3, null] },
+      sus2: { frets: [0, 2, 4, 4, 0, 0], fingers: [1, 2, 3, 4, 1, 1], barre: { fromString: 6, toString: 1 } },
+      '9': { frets: [0, 2, 0, 1, 0, 2], fingers: [1, 3, 1, 2, 1, 4], barre: { fromString: 6, toString: 1 } },
     },
   },
   {
@@ -59,6 +76,13 @@ const FAMILIES: MovableFamily[] = [
       maj7: { frets: [null, 0, 2, 1, 2, 0], fingers: [null, 1, 3, 2, 4, 1], barre: { fromString: 5, toString: 1 } },
       sus4: { frets: [null, 0, 2, 2, 3, 0], fingers: [null, 1, 2, 3, 4, 1], barre: { fromString: 5, toString: 1 } },
       add9: { frets: [null, 0, 2, 4, 2, 0], fingers: [null, 1, 2, 4, 3, 1], barre: { fromString: 5, toString: 1 } },
+      m7b5: { frets: [null, 0, 1, 0, 1, null], fingers: [null, 1, 3, 2, 4, null] },
+      dim: { frets: [null, 0, 1, 2, 1, null], fingers: [null, 1, 2, 4, 3, null] },
+      dim7: { frets: [null, 0, 1, -1, 1, null], fingers: [null, 2, 3, 1, 4, null] },
+      aug: { frets: [null, 0, 3, 2, 2, null], fingers: [null, 1, 4, 2, 3, null] },
+      '6': { frets: [null, 0, 2, 2, 2, 2], fingers: [null, 1, 3, 3, 3, 3] },
+      sus2: { frets: [null, 0, 2, 2, 0, 0], fingers: [null, 1, 3, 4, 1, 1], barre: { fromString: 5, toString: 1 } },
+      '9': { frets: [null, 0, -1, 0, 0, 0], fingers: [null, 2, 1, 3, 3, 3] },
     },
   },
   {
@@ -72,6 +96,13 @@ const FAMILIES: MovableFamily[] = [
       m7: { frets: [null, null, 0, 2, 1, 1], fingers: [null, null, 1, 3, 2, 2] },
       maj7: { frets: [null, null, 0, 2, 2, 2], fingers: [null, null, 1, 2, 3, 4] },
       sus4: { frets: [null, null, 0, 2, 3, 3], fingers: [null, null, 1, 2, 3, 4] },
+      m7b5: { frets: [null, null, 0, 1, 1, 1], fingers: [null, null, 1, 2, 3, 4] },
+      dim: { frets: [null, null, 0, 1, 3, 1], fingers: [null, null, 1, 2, 4, 3] },
+      dim7: { frets: [null, null, 0, 1, 0, 1], fingers: [null, null, 1, 3, 2, 4] },
+      aug: { frets: [null, null, 0, 3, 3, 2], fingers: [null, null, 1, 3, 4, 2] },
+      '6': { frets: [null, null, 0, 2, 0, 2], fingers: [null, null, 1, 3, 1, 4] },
+      sus2: { frets: [null, null, 0, 2, 3, 0], fingers: [null, null, 1, 2, 4, 1] },
+      '9': { frets: [null, null, 0, -1, 1, 0], fingers: [null, null, 2, 1, 3, 4] },
     },
   },
 ];
@@ -98,6 +129,14 @@ const MAX_FRET_WITHOUT_OFFSET = 5;
 
 type Fingering = Omit<ChordShape, 'id' | 'name'>;
 
+const OCTAVE = 12;
+
+/** ずらしたときに0フレットを下回る形は1オクターブ上に移す */
+function placeRoot(shape: MovableShape, rootFret: number): number {
+  const lowest = Math.min(...shape.frets.filter((f): f is number => f !== null));
+  return rootFret + lowest < 0 ? rootFret + OCTAVE : rootFret;
+}
+
 function transpose(shape: MovableShape, rootFret: number): Fingering {
   const frets = shape.frets.map((f) => (f === null ? null : f + rootFret));
   if (rootFret === 0) {
@@ -105,12 +144,12 @@ function transpose(shape: MovableShape, rootFret: number): Fingering {
     const fingers = shape.frets.map((f, i) => (f === null || f === 0 ? null : shape.fingers[i]! - 1));
     return { frets, fingers };
   }
-  const maxFret = Math.max(...frets.filter((f): f is number => f !== null));
+  const fretted = frets.filter((f): f is number => f !== null && f > 0);
   return {
     frets,
     fingers: shape.fingers,
     ...(shape.barre && { barre: { fret: rootFret, ...shape.barre } }),
-    ...(maxFret > MAX_FRET_WITHOUT_OFFSET && { baseFret: rootFret }),
+    ...(Math.max(...fretted) > MAX_FRET_WITHOUT_OFFSET && { baseFret: Math.min(...fretted) }),
   };
 }
 
@@ -122,7 +161,8 @@ function position(voicing: Voicing): number {
 
 function buildChord(root: Note, type: ChartType): ChartChord {
   const id = `${root}${type}`;
-  const toVoicing = (label: VoicingLabel, fingering: Fingering): Voicing => ({ id: `${id}@${label}`, name: id, label, ...fingering });
+  const name = `${root}${NAME_SUFFIX[type] ?? type}`;
+  const toVoicing = (label: VoicingLabel, fingering: Fingering): Voicing => ({ id: `${id}@${label}`, name, label, ...fingering });
 
   const candidates: Voicing[] = [];
   const open = OPEN_SHAPES[id];
@@ -130,7 +170,7 @@ function buildChord(root: Note, type: ChartType): ChartChord {
   for (const family of FAMILIES) {
     const shape = family.shapes[type];
     if (!shape) continue;
-    const rootFret = (NOTES.indexOf(root) - NOTES.indexOf(family.openNote) + 12) % 12;
+    const rootFret = placeRoot(shape, (NOTES.indexOf(root) - NOTES.indexOf(family.openNote) + OCTAVE) % OCTAVE);
     candidates.push(toVoicing(rootFret === 0 ? 'オープン' : family.label, transpose(shape, rootFret)));
   }
 
@@ -144,7 +184,7 @@ function buildChord(root: Note, type: ChartType): ChartChord {
     })
     .sort((a, b) => position(a) - position(b));
 
-  return { id, name: id, type, tones: sortFromRoot(root, voicings.flatMap(chordTones)), voicings };
+  return { id, name, type, tones: sortFromRoot(root, voicings.flatMap(chordTones)), voicings };
 }
 
 export const CHART: ChartSection[] = NOTES.map((root) => ({

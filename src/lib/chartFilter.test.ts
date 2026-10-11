@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { CHART, type ChartType } from '../data/chart';
+import { CHART, CHART_TYPES, type ChartType } from '../data/chart';
 import { filterChart } from './chartFilter';
 
 const ids = (types: ChartType[]) =>
@@ -24,6 +24,6 @@ describe('filterChart', () => {
 
   it('元のデータを書き換えない', () => {
     filterChart(CHART, new Set<ChartType>(['7']));
-    expect(CHART[0].chords).toHaveLength(7);
+    expect(CHART[0].chords).toHaveLength(CHART_TYPES.length);
   });
 });

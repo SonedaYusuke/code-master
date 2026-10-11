@@ -29,7 +29,7 @@ export default function Chart() {
     <main className="page">
       <a className="back" href={formatRoute({ page: 'home' })}>← ホーム</a>
       <h1>コード早見表</h1>
-      <p className="muted">12のルートごとに、M・m・7・m7・M7・sus4・add9 の押さえ方を、低いポジションから順にまとめています。</p>
+      <p className="muted">12のルートごとに、14種類のコードの押さえ方を、低いポジションから順にまとめています。</p>
       <div className="chart-toolbar">
         <nav className="root-nav">
           {CHART.map(({ root }) => (

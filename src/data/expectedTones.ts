@@ -11,6 +11,7 @@ const QUALITY_INTERVALS: Record<string, number[]> = {
   add9: [0, 4, 7, 2],
   '6': [0, 4, 7, 9],
   dim: [0, 3, 6],
+  dim7: [0, 3, 6, 9],
   aug: [0, 4, 8],
   m7b5: [0, 3, 6, 10],
   '9': [0, 4, 7, 10, 2],

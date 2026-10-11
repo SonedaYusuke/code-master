@@ -19,7 +19,24 @@ describe('CHART', () => {
     expect(CHART.map((s) => s.root)).toEqual([...NOTES]);
   });
 
-  it('各ルートに メジャー → m → 7 → m7 → maj7 → sus4 → add9 の順で7コードある', () => {
+  it('タイプは よく使う7種 → m7♭5 → dim → dim7 → aug → 6 → sus2 → 9 の14種', () => {
+    expect([...CHART_TYPES]).toEqual(['', 'm', '7', 'm7', 'maj7', 'sus4', 'add9', 'm7b5', 'dim', 'dim7', 'aug', '6', 'sus2', '9']);
+  });
+
+  it('m7b5 の表示名は ♭ を使う', () => {
+    expect(byId('Cm7b5').name).toBe('Cm7♭5');
+    expect(byId('C#dim7').name).toBe('C#dim7');
+  });
+
+  it('ルートより低いフレットを使う形が0フレットを下回るときは1オクターブ上に移す', () => {
+    // E の6弦ルート dim7（3x232x 型）は 0 フレットだと -1 になるので 12 フレットへ
+    expect(voicing('Edim7', '6弦ルート')).toMatchObject({ frets: [12, null, 11, 12, 11, null], baseFret: 11 });
+    // G は 3 フレットなのでそのまま
+    expect(voicing('Gdim7', '6弦ルート')).toMatchObject({ frets: [3, null, 2, 3, 2, null] });
+    expect(voicing('Gdim7', '6弦ルート')!.baseFret).toBeUndefined();
+  });
+
+  it('各ルートにタイプ順でコードが並ぶ', () => {
     for (const section of CHART) {
       expect(section.chords.map((c) => c.id)).toEqual(CHART_TYPES.map((type) => `${section.root}${type}`));
     }
