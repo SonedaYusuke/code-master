@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { NOTES } from '../model';
 import { chordTones, rootNote } from '../lib/notes';
-import { CHART, CHART_TYPES } from './chart';
+import { CHART, CHART_TYPES, FREQUENCIES } from './chart';
 import { expectedTones } from './expectedTones';
 
 const allChords = CHART.flatMap((section) => section.chords);
@@ -75,6 +75,18 @@ describe('CHART', () => {
   it('構成音は全ボイシングの音を合わせて、ルートから並べる', () => {
     // C7 のオープンは5度（G）を省くが、他の形で鳴っている
     expect(byId('C7').tones).toEqual(['C', 'E', 'G', 'A#']);
+  });
+
+  it('頻出度の一覧のコードはすべて早見表にあり、重複しない', () => {
+    const listed = [...FREQUENCIES.top, ...FREQUENCIES.common];
+    for (const id of listed) expect(allChords.map((c) => c.id)).toContain(id);
+    expect(new Set(listed).size).toBe(listed.length);
+  });
+
+  it('コードに頻出度が付く', () => {
+    expect(byId('C').frequency).toBe('top');
+    expect(byId('F#m').frequency).toBe('common');
+    expect(byId('Cdim').frequency).toBeUndefined();
   });
 
   describe.each(allChords)('$id', (chord) => {

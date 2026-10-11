@@ -22,12 +22,40 @@ export const CHART_TYPE_LABELS: Record<ChartType, string> = {
   '9': '9',
 };
 
+export type Frequency = 'top' | 'common';
+
+export const FREQUENCY_LABELS: Record<Frequency, string> = { top: '超頻出', common: '頻出' };
+
+/** ポップス・ロックでの登場頻度。ここにないコードはラベルなし */
+export const FREQUENCIES: Record<Frequency, readonly string[]> = {
+  top: ['C', 'D', 'E', 'F', 'G', 'A', 'A#', 'Am', 'Bm', 'Dm', 'Em', 'G7', 'E7', 'Cmaj7'],
+  common: [
+    'B', 'D#', 'F#', 'G#',
+    'Cm', 'F#m', 'Gm', 'C#m', 'Fm',
+    'A7', 'B7', 'C7', 'D7',
+    'Am7', 'Bm7', 'Dm7', 'Em7', 'F#m7',
+    'Fmaj7', 'Gmaj7', 'Dmaj7', 'Amaj7',
+    'Asus4', 'Dsus4', 'Esus4', 'Gsus4', 'Cadd9', 'Gadd9',
+  ],
+};
+
+function frequencyOf(id: string): Frequency | undefined {
+  return (Object.keys(FREQUENCIES) as Frequency[]).find((frequency) => FREQUENCIES[frequency].includes(id));
+}
+
 /** コード名の表記がタイプの id と違うもの */
 const NAME_SUFFIX: Partial<Record<ChartType, string>> = { m7b5: 'm7♭5' };
 
 export type VoicingLabel = 'オープン' | '6弦ルート' | '5弦ルート' | '4弦ルート';
 export type Voicing = ChordShape & { label: VoicingLabel };
-export type ChartChord = { id: string; name: string; type: ChartType; tones: Note[]; voicings: Voicing[] };
+export type ChartChord = {
+  id: string;
+  name: string;
+  type: ChartType;
+  frequency?: Frequency;
+  tones: Note[];
+  voicings: Voicing[];
+};
 export type ChartSection = { root: Note; chords: ChartChord[] };
 
 /** ルートを 0 フレットとしたときの相対フレット（ルートより低いフレットは負の値）。指 1 が人差し指のセーハ */
@@ -184,7 +212,15 @@ function buildChord(root: Note, type: ChartType): ChartChord {
     })
     .sort((a, b) => position(a) - position(b));
 
-  return { id, name, type, tones: sortFromRoot(root, voicings.flatMap(chordTones)), voicings };
+  const frequency = frequencyOf(id);
+  return {
+    id,
+    name,
+    type,
+    ...(frequency && { frequency }),
+    tones: sortFromRoot(root, voicings.flatMap(chordTones)),
+    voicings,
+  };
 }
 
 export const CHART: ChartSection[] = NOTES.map((root) => ({

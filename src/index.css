@@ -153,3 +153,17 @@ a { color: var(--text); }
 .voicings { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 8px; }
 .voicing { margin: 0; text-align: center; }
 .voicing figcaption { color: var(--muted); font-size: 0.85rem; font-weight: 700; }
+
+.filter-divider { width: 2px; align-self: stretch; margin: 2px 4px; background: var(--ink); border-radius: 1px; }
+.freq-badge {
+  align-self: center;
+  padding: 1px 10px;
+  border: var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.freq-badge.freq-top, .chip.freq-top.selected { background: var(--red); }
+.freq-badge.freq-common, .chip.freq-common.selected { background: var(--yellow); }
+.root-nav .button:disabled { opacity: 0.35; box-shadow: none; }
