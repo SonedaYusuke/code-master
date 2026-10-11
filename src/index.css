@@ -117,3 +117,21 @@ a { color: var(--accent); }
 .root-nav .button { padding: 6px 12px; min-width: 48px; }
 .chart-section { margin-top: 32px; scroll-margin-top: 110px; }
 .chart-root { font-size: 1.4rem; margin: 0; padding-bottom: 4px; border-bottom: 2px solid var(--accent); }
+
+.chart-chord {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.chart-chord-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.chart-chord-head h3 { margin: 0; font-size: 1.2rem; }
+.voicings {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+.voicing { margin: 0; text-align: center; }
+.voicing figcaption { color: var(--muted); font-size: 0.85rem; }

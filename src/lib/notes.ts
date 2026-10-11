@@ -20,8 +20,11 @@ export function rootNote(chord: Chord): Note {
   return root;
 }
 
+/** 重複を除き、ルートからの音程順に並べる */
+export function sortFromRoot(root: Note, notes: readonly Note[]): Note[] {
+  return [...new Set(notes)].sort((a, b) => intervalFrom(root, a) - intervalFrom(root, b));
+}
+
 export function chordTones(chord: Chord): Note[] {
-  const root = rootNote(chord);
-  const unique = [...new Set(stringNotes(chord).filter((note): note is Note => note !== null))];
-  return unique.sort((a, b) => intervalFrom(root, a) - intervalFrom(root, b));
+  return sortFromRoot(rootNote(chord), stringNotes(chord).filter((note): note is Note => note !== null));
 }
