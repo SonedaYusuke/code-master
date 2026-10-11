@@ -6,8 +6,16 @@ import { MODE_LABELS, type QuizResult } from '../lib/quiz';
 import { formatRoute, quizRoute } from '../lib/route';
 import { navigate } from '../router';
 import ChordCard from '../components/ChordCard';
+import ResultSummary from '../components/ResultSummary';
 
 type Props = { level: Level; result: QuizResult | null };
+
+/** 全問正解ならパーフェクト、クリア条件（正答率80%）を満たせばクリア */
+function achievementOf(result: QuizResult): string | undefined {
+  if (result.correct === result.total) return 'パーフェクト！';
+  if (result.score >= CLEAR_THRESHOLD) return 'クリア！';
+  return undefined;
+}
 
 export default function Result({ level, result }: Props) {
   const valid = result !== null && result.level === level;
@@ -21,19 +29,25 @@ export default function Result({ level, result }: Props) {
   return (
     <main className="page">
       <a className="back" href={formatRoute({ page: 'home' })}>← ホーム</a>
-      <h1>Lv{level} {LEVEL_INFO[level].title} の結果</h1>
-      <p className="muted">{MODE_LABELS[result.mode]}</p>
-      {result.newHighScore && <p className="high-score">ハイスコア更新！</p>}
-      <p className="score">{result.points.toLocaleString('ja-JP')} pt</p>
-      <p>
-        正答率 {result.score}%（{result.total} 問中 {result.correct} 問正解）
-        {result.score >= CLEAR_THRESHOLD && ' — クリア！'}
-      </p>
-      <p>最大コンボ {result.maxCombo}</p>
-      <div className="actions">
-        <a className="button" href={formatRoute(quizRoute(level, result.mode))}>もう一度</a>
-        <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習に戻る</a>
-      </div>
+      <h1>結果</h1>
+      <ResultSummary
+        title={`Lv${level} ${LEVEL_INFO[level].title}`}
+        description={LEVEL_INFO[level].description}
+        heading={MODE_LABELS[result.mode]}
+        points={result.points}
+        newHighScore={result.newHighScore}
+        achievement={achievementOf(result)}
+        stats={[
+          { label: '正解', value: `${result.correct} / ${result.total}` },
+          { label: '最大コンボ', value: `${result.maxCombo}` },
+        ]}
+        actions={
+          <>
+            <a className="button" href={formatRoute(quizRoute(level, result.mode))}>もう一度</a>
+            <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習に戻る</a>
+          </>
+        }
+      />
       {result.wrong.length > 0 && (
         <>
           <h2 style={{ marginTop: 24 }}>間違えたコード</h2>

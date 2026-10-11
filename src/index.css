@@ -92,17 +92,6 @@ a { color: var(--text); }
 .feedback { margin-top: 20px; font-size: 1.1rem; font-weight: 800; }
 .feedback.correct { color: #1a8a5a; }
 .feedback.wrong { color: #d83a3a; }
-.score {
-  display: inline-block;
-  margin: 12px 0;
-  padding: 8px 24px;
-  border: var(--border);
-  border-radius: var(--radius);
-  background: var(--yellow);
-  box-shadow: var(--shadow);
-  font-size: 2.6rem;
-  font-weight: 800;
-}
 
 .chart-toolbar {
   position: sticky;
@@ -224,15 +213,6 @@ a { color: var(--text); }
 }
 .timer-bar { height: 100%; background: var(--green); transition: width 50ms linear; }
 .timer.danger .timer-bar { background: var(--red); }
-.high-score {
-  display: inline-block;
-  padding: 2px 14px;
-  border: var(--border);
-  border-radius: 999px;
-  background: var(--red);
-  font-weight: 800;
-  animation: pop 0.4s ease-out;
-}
 
 @keyframes pop {
   0% { transform: scale(0.6); }
@@ -244,7 +224,7 @@ a { color: var(--text); }
   to { opacity: 0; transform: translateY(-28px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .countdown, .combo, .high-score, .points-pop { animation: none; }
+  .countdown, .combo, .points-pop { animation: none; }
   .timer-bar { transition: none; }
 }
 
@@ -256,8 +236,6 @@ a { color: var(--text); }
 .hearts { display: inline-flex; gap: 2px; font-size: 1.4rem; line-height: 1; }
 .heart { color: var(--red); -webkit-text-stroke: 1.5px var(--ink); }
 .heart.lost { color: transparent; }
-.challenge-result { text-align: center; }
-.challenge-result .actions { justify-content: center; }
 
 /* ルート＋タイプのモード */
 .build-step { margin-top: 16px; font-weight: 800; text-align: left; }
@@ -310,3 +288,52 @@ a { color: var(--text); }
 .mode-option:active { transform: translate(4px, 4px); box-shadow: none; }
 .mode-option-title { font-size: 1.1rem; font-weight: 800; }
 .mode-option-record { font-size: 0.85rem; font-weight: 700; }
+
+/* 結果画面 */
+.result-card {
+  max-width: 520px;
+  margin: 16px auto 0;
+  padding: 24px 20px;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.result-title { margin: 0; font-size: 1.4rem; }
+.result-description { margin-top: 4px; font-size: 0.9rem; }
+.result-heading {
+  display: inline-block;
+  margin: 12px 0 0;
+  padding: 0 12px;
+  border: var(--border);
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+.result-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+.high-score, .achievement {
+  padding: 2px 14px;
+  border: var(--border);
+  border-radius: 999px;
+  font-weight: 800;
+  animation: pop 0.4s ease-out;
+}
+.high-score { background: var(--red); }
+.achievement { background: var(--green); }
+.result-points { margin: 8px 0 4px; font-size: 3.4rem; font-weight: 800; line-height: 1.1; }
+.result-points-unit { margin-left: 6px; font-size: 1.4rem; }
+/* タイルの数に合わせて等分する */
+.result-stats { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 10px; margin: 16px 0 0; }
+.result-stat {
+  padding: 10px 4px;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--yellow);
+}
+.result-stat dt { color: var(--ink); font-size: 0.8rem; font-weight: 700; }
+.result-stat dd { margin: 2px 0 0; font-size: 1.4rem; font-weight: 800; }
+.result-actions { justify-content: center; margin-top: 20px; }
+@media (prefers-reduced-motion: reduce) {
+  .high-score, .achievement { animation: none; }
+}

@@ -19,6 +19,7 @@ import ChordDiagram from '../components/ChordDiagram';
 import TimerBar from '../components/TimerBar';
 import BuildAnswer from '../components/BuildAnswer';
 import ShapeAnswer from '../components/ShapeAnswer';
+import ResultSummary from '../components/ResultSummary';
 import { useCountdown } from '../hooks/useCountdown';
 import { useQuestionTimer } from '../hooks/useQuestionTimer';
 
@@ -74,17 +75,25 @@ export default function Challenge() {
       <h1>チャレンジモード</h1>
 
       {phase === 'result' && summary ? (
-        <section className="challenge-result">
-          <h2>{summary.completed ? `${MAX_QUESTIONS}問完走！` : 'ゲームオーバー'}</h2>
-          {summary.newHighScore && <p className="high-score">ハイスコア更新！</p>}
-          <p className="score">{summary.points.toLocaleString('ja-JP')} pt</p>
-          <p>{summary.answered} 問中 {summary.correct} 問正解 / 最大コンボ {summary.maxCombo}</p>
-          <p className="muted">{MODE_LABELS[mode]} / 出題タイプ: {selectionKey(types)} / ハイスコア {summary.best.toLocaleString('ja-JP')}pt</p>
-          <div className="actions">
-            <button className="button" onClick={start}>もう一度</button>
-            <button className="button secondary" onClick={() => setPhase('setup')}>タイプを選び直す</button>
-          </div>
-        </section>
+        <ResultSummary
+          title="チャレンジモード"
+          description={`${MODE_LABELS[mode]} / 出題タイプ: ${selectionKey(types)}`}
+          heading={summary.completed ? 'クリア' : 'ゲームオーバー'}
+          points={summary.points}
+          newHighScore={summary.newHighScore}
+          achievement={summary.completed ? `${MAX_QUESTIONS}問完走！` : undefined}
+          stats={[
+            { label: '正解', value: `${summary.correct} / ${summary.answered}` },
+            { label: '最大コンボ', value: `${summary.maxCombo}` },
+            { label: 'ハイスコア', value: `${summary.best.toLocaleString('ja-JP')}pt` },
+          ]}
+          actions={
+            <>
+              <button className="button" onClick={start}>もう一度</button>
+              <button className="button secondary" onClick={() => setPhase('setup')}>タイプを選び直す</button>
+            </>
+          }
+        />
       ) : (
         <section>
           <p className="muted">
