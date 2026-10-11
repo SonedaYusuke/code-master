@@ -17,7 +17,7 @@ export default function Home() {
       </div>
       <section className="level-card challenge-card">
         <h2>チャレンジモード</h2>
-        <p className="muted">選んだタイプのコードからランダムに出題。ライフ {MAX_LIVES} つで最大 {MAX_QUESTIONS} 問に挑戦します。</p>
+        <p className="muted">選んだコードからランダムに出題。ライフ {MAX_LIVES} つで最大 {MAX_QUESTIONS} 問に挑戦します。</p>
         <div className="actions">
           <a className="button" href={formatRoute({ page: 'challenge' })}>挑戦する</a>
         </div>

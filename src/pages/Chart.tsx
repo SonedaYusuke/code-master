@@ -66,7 +66,7 @@ export default function Chart() {
             </button>
           ))}
         </nav>
-        <div className="type-filter" role="group" aria-label="頻出度・省略形とコードタイプで絞り込む">
+        <div className="type-filter" role="group" aria-label="頻出度・省略形とコードで絞り込む">
           {FREQUENCY_ORDER.map((frequency) => (
             <button
               key={frequency}

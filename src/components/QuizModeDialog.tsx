@@ -7,7 +7,7 @@ import { loadProgress } from '../lib/progress';
 
 const MODE_DESCRIPTIONS: Record<QuizMode, string> = {
   choice: '形を見て、コード名を選ぶ',
-  build: '形を見て、ルート音とタイプを順に選ぶ',
+  build: '形を見て、ルート音とコードを順に選ぶ',
   shape: 'コード名を見て、押さえ方を選ぶ',
 };
 const MODES: QuizMode[] = ['choice', 'build', 'shape'];

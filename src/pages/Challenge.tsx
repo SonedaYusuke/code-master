@@ -77,7 +77,7 @@ export default function Challenge() {
       {phase === 'result' && summary ? (
         <ResultSummary
           title="チャレンジモード"
-          description={`${MODE_LABELS[mode]} / 出題タイプ: ${selectionKey(types)}`}
+          description={`${MODE_LABELS[mode]} / 出題コード: ${selectionKey(types)}`}
           heading={summary.completed ? 'クリア' : 'ゲームオーバー'}
           points={summary.points}
           newHighScore={summary.newHighScore}
@@ -90,14 +90,14 @@ export default function Challenge() {
           actions={
             <>
               <button className="button" onClick={start}>もう一度</button>
-              <button className="button secondary" onClick={() => setPhase('setup')}>タイプを選び直す</button>
+              <button className="button secondary" onClick={() => setPhase('setup')}>コードを選び直す</button>
             </>
           }
         />
       ) : (
         <section>
           <p className="muted">
-            選んだタイプのコードからランダムに出題します。ライフは {MAX_LIVES} つで、不正解か時間切れで1つ減ります。最大 {MAX_QUESTIONS} 問。
+            選んだコードからランダムに出題します。ライフは {MAX_LIVES} つで、不正解か時間切れで1つ減ります。最大 {MAX_QUESTIONS} 問。
           </p>
           <h2 style={{ marginTop: 20 }}>答え方</h2>
           <div className="mode-toggle" role="group" aria-label="答え方">
@@ -107,8 +107,8 @@ export default function Challenge() {
               </button>
             ))}
           </div>
-          <h2 style={{ marginTop: 20 }}>出題するタイプ</h2>
-          <div className="type-picker" role="group" aria-label="出題するタイプ">
+          <h2 style={{ marginTop: 20 }}>出題するコード</h2>
+          <div className="type-picker" role="group" aria-label="出題するコード">
             {CHART_TYPES.map((type) => (
               <button
                 key={type}
