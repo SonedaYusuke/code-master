@@ -10,6 +10,7 @@ export const LEVEL_INFO: Record<Level, { title: string; description: string }> =
   6: { title: 'sus・add9', description: '開放弦の形で覚える、浮遊感のある sus と add9。' },
   7: { title: '6・9 とバレーの sus・add9', description: '6th・9th と、バレーで押さえる sus・add9。' },
   8: { title: 'dim・aug 系', description: 'つなぎや緊張感を作る、ディミニッシュ・オーギュメント系のコード。' },
+  9: { title: '省略形', description: 'バレーを使わずに弦を減らして押さえる、F などの簡単な押さえ方。' },
 };
 
 /** 早見表から選ぶ形。label を省くと一番低いポジションの形、name を省くと早見表の表記 */
@@ -86,6 +87,12 @@ const LEVEL_PICKS: Record<Level, Pick[]> = {
     { chord: 'Edim7', label: '4弦ルート' },
     { chord: 'Caug', label: '5弦ルート' },
     { chord: 'Eaug', label: 'オープン' },
+  ],
+  9: [
+    { chord: 'F', label: '省略形' },
+    { chord: 'Fm', label: '省略形' },
+    { chord: 'Fmaj7', label: '省略形' },
+    { chord: 'F#m', label: '省略形' },
   ],
 };
 

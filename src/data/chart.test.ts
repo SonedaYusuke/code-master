@@ -93,10 +93,16 @@ describe('CHART', () => {
     expect(voicing('F', '6弦ルート')!.frequency).toBe('top');
     expect(voicing('Bm', '5弦ルート')!.frequency).toBe('top');
     expect(voicing('A#', '5弦ルート')!.frequency).toBe('top');
+    expect(voicing('F', '省略形')!.frequency).toBe('common');
   });
 
-  it('頻出コードは一番低い形だけが頻出', () => {
-    expect(byId('F#m').voicings.map((v) => v.frequency)).toEqual(['common', undefined, undefined]);
+  it('省略形は同じポジションのバレーの形の後ろに並ぶ', () => {
+    expect(labelsOf('F')).toEqual(['6弦ルート', '省略形', '4弦ルート', '5弦ルート']);
+    expect(voicing('F', '省略形')).toMatchObject({ frets: [null, null, 3, 2, 1, 1] });
+  });
+
+  it('頻出コードは一番低い形と省略形が頻出', () => {
+    expect(byId('F#m').voicings.map((v) => v.frequency)).toEqual(['common', 'common', undefined, undefined]);
     expect(voicing('Cadd9', 'オープン')!.frequency).toBe('common');
   });
 

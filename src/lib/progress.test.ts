@@ -41,7 +41,7 @@ describe('loadProgress', () => {
       1: { bestScore: 70, bestPoints: -5 },
       2: { bestScore: 'x' },
       3: { bestScore: 150 },
-      9: { bestScore: 50 },
+      10: { bestScore: 50 },
     });
     expect(loadProgress(memoryStorage(raw))).toEqual({ 1: { bestScore: 70, bestPoints: 0, cleared: false } });
   });
