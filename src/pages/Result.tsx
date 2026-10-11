@@ -1,11 +1,12 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { Level } from '../model';
 import { LEVEL_INFO } from '../data/chords';
 import { CLEAR_THRESHOLD } from '../lib/progress';
 import { MODE_LABELS, type QuizResult } from '../lib/quiz';
-import { formatRoute, quizRoute } from '../lib/route';
+import { formatRoute } from '../lib/route';
 import { navigate } from '../router';
 import ChordCard from '../components/ChordCard';
+import QuizModeDialog from '../components/QuizModeDialog';
 import ResultSummary from '../components/ResultSummary';
 
 type Props = { level: Level; result: QuizResult | null };
@@ -19,6 +20,7 @@ function achievementOf(result: QuizResult): string | undefined {
 
 export default function Result({ level, result }: Props) {
   const valid = result !== null && result.level === level;
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     if (!valid) navigate({ page: 'quiz', level }, true);
@@ -43,7 +45,7 @@ export default function Result({ level, result }: Props) {
         ]}
         actions={
           <>
-            <a className="button" href={formatRoute(quizRoute(level, result.mode))}>もう一度</a>
+            <button className="button" onClick={() => setDialogOpen(true)}>もう一度</button>
             <a className="button secondary" href={formatRoute({ page: 'study', level })}>学習に戻る</a>
           </>
         }
@@ -58,6 +60,7 @@ export default function Result({ level, result }: Props) {
           </div>
         </>
       )}
+      <QuizModeDialog level={dialogOpen ? level : null} onClose={() => setDialogOpen(false)} />
     </main>
   );
 }
