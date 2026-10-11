@@ -58,6 +58,28 @@ function buildChoices(item: ChallengeItem, rng: () => number): string[] {
   return shuffle([...names], rng);
 }
 
+/**
+ * 「形を選ぶ」の選択肢。同じタイプでルート違い（同じ形で位置違い）か、同じルートでタイプ違いの形を混ぜる。
+ * 同じ名前の別の押さえ方はどちらも正解になってしまうので入れない
+ */
+export function buildShapeChoices(item: ChallengeItem, rng: () => number = Math.random): ChallengeItem[] {
+  const choices = [item];
+  const usedFrets = new Set([JSON.stringify(item.voicing.frets)]);
+  const related = ALL_CHORDS.filter(
+    (chord) => chord.name !== item.name && (chord.type === item.type || chord.root === item.root),
+  );
+  for (const chord of shuffle(related, rng)) {
+    if (choices.length === CHOICE_COUNT) break;
+    const playable = chord.voicings.filter((v) => isPlayable(chord.type, v) && !usedFrets.has(JSON.stringify(v.frets)));
+    if (playable.length === 0) continue;
+    // 正解と同じラベルの形があればそれを使い、位置の読み取りを練習させる
+    const voicing = playable.find((v) => v.label === item.voicing.label) ?? playable[Math.floor(rng() * playable.length)];
+    usedFrets.add(JSON.stringify(voicing.frets));
+    choices.push({ chordId: chord.id, name: chord.name, type: chord.type, root: chord.root, voicing });
+  }
+  return shuffle(choices, rng);
+}
+
 /** 前の問題と同じ形は避けて、ランダムに1問作る */
 export function nextQuestion(
   pool: readonly ChallengeItem[],

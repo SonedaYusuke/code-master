@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { formatRoute, parseRoute } from './route';
+import { formatRoute, parseRoute, quizRoute } from './route';
 
 describe('parseRoute', () => {
   it.each([
@@ -7,6 +7,7 @@ describe('parseRoute', () => {
     ['#/level/3/quiz', { page: 'quiz', level: 3 }],
     ['#/level/5/result', { page: 'result', level: 5 }],
     ['#/level/2/build', { page: 'build', level: 2 }],
+    ['#/level/3/shape', { page: 'shape', level: 3 }],
     ['#/chart', { page: 'chart' }],
     ['#/challenge', { page: 'challenge' }],
   ])('%s を解析する', (hash, expected) => {
@@ -19,6 +20,14 @@ describe('parseRoute', () => {
       expect(parseRoute(hash)).toEqual({ page: 'home' });
     },
   );
+});
+
+describe('quizRoute', () => {
+  it('モードごとのクイズのルートを返す', () => {
+    expect(quizRoute(1, 'choice')).toEqual({ page: 'quiz', level: 1 });
+    expect(quizRoute(2, 'build')).toEqual({ page: 'build', level: 2 });
+    expect(quizRoute(3, 'shape')).toEqual({ page: 'shape', level: 3 });
+  });
 });
 
 describe('formatRoute', () => {

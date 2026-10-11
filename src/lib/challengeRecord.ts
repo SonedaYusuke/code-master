@@ -18,10 +18,10 @@ export function selectionKey(types: ReadonlySet<ChartType>): string {
   return CHART_TYPES.filter((type) => types.has(type)).map((type) => CHART_TYPE_LABELS[type]).join(',');
 }
 
-/** 4択の記録は以前からのキーのまま、ルート＋タイプは別のキーにする */
+/** 4択の記録は以前からのキーのまま、ほかのモードはモード名を前に付けて分ける */
 export function challengeRecordKey(types: ReadonlySet<ChartType>, mode: QuizMode): string {
   const key = selectionKey(types);
-  return mode === 'build' ? `build:${key}` : key;
+  return mode === 'choice' ? key : `${mode}:${key}`;
 }
 
 function loadAll(storage: StorageLike | null): Record<string, number> {

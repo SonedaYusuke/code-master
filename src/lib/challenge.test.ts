@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { ChartType } from '../data/chart';
-import { MAX_LIVES, MAX_QUESTIONS, buildPool, isFinished, nextQuestion } from './challenge';
+import { MAX_LIVES, MAX_QUESTIONS, buildPool, buildShapeChoices, isFinished, nextQuestion } from './challenge';
 
 function seededRng(seed: number): () => number {
   let state = seed;
@@ -91,6 +91,34 @@ describe('nextQuestion', () => {
 
   it('出題する形がなければ例外を投げる', () => {
     expect(() => nextQuestion([], null)).toThrow();
+  });
+});
+
+describe('buildShapeChoices', () => {
+  it('正解の形を含む4つの形で、名前が重ならない', () => {
+    const items = pool(['', 'm', '7', 'm7']);
+    const rng = seededRng(5);
+    for (let i = 0; i < 100; i++) {
+      const item = nextQuestion(items, null, rng).item;
+      const choices = buildShapeChoices(item, rng);
+      expect(choices).toHaveLength(4);
+      expect(choices.filter((c) => c.voicing.id === item.voicing.id)).toHaveLength(1);
+      expect(new Set(choices.map((c) => c.name)).size).toBe(4);
+      expect(new Set(choices.map((c) => JSON.stringify(c.voicing.frets))).size).toBe(4);
+    }
+  });
+
+  it('不正解の形は、同じタイプか同じルートのコードの、演奏で使う形にする', () => {
+    const items = pool(['m7']);
+    const allPlayable = new Set(buildPool(new Set<ChartType>(['', 'm', '7', 'm7', 'maj7', 'sus4', 'add9', 'm7b5', 'dim', 'dim7', 'aug', '6', 'sus2', '9'])).map((c) => c.voicing.id));
+    const rng = seededRng(6);
+    for (let i = 0; i < 100; i++) {
+      const item = nextQuestion(items, null, rng).item;
+      for (const choice of buildShapeChoices(item, rng)) {
+        expect(choice.type === item.type || choice.root === item.root).toBe(true);
+        expect(allPlayable.has(choice.voicing.id)).toBe(true);
+      }
+    }
   });
 });
 

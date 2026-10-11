@@ -23,6 +23,7 @@ describe('challengeRecordKey', () => {
     const types = new Set<ChartType>(['', 'm']);
     expect(challengeRecordKey(types, 'choice')).toBe('M,m');
     expect(challengeRecordKey(types, 'build')).toBe('build:M,m');
+    expect(challengeRecordKey(types, 'shape')).toBe('shape:M,m');
   });
 });
 

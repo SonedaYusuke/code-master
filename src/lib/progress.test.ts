@@ -57,6 +57,8 @@ describe('モードごとの記録', () => {
     const storage = memoryStorage();
     saveResult(1, { score: 90, points: 2000 }, storage, 'choice');
     saveResult(1, { score: 60, points: 3000 }, storage, 'build');
+    saveResult(1, { score: 70, points: 1000 }, storage, 'shape');
+    expect(loadProgress(storage, 'shape')[1]?.bestPoints).toBe(1000);
     expect(loadProgress(storage, 'choice')[1]).toEqual({ bestScore: 90, bestPoints: 2000, cleared: true });
     expect(loadProgress(storage, 'build')[1]).toEqual({ bestScore: 60, bestPoints: 3000, cleared: false });
     expect(loadProgress(storage)[1]?.bestPoints).toBe(2000);

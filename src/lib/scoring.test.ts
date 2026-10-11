@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { TIME_LIMIT_MS, pointsFor } from './scoring';
+import { TIME_LIMIT_MS, pointsFor, timeLimitFor } from './scoring';
+
+describe('timeLimitFor', () => {
+  it('4択と形を選ぶは5秒、ルート＋タイプは10秒', () => {
+    expect(timeLimitFor('choice')).toBe(5000);
+    expect(timeLimitFor('shape')).toBe(5000);
+    expect(timeLimitFor('build')).toBe(10000);
+  });
+});
 
 describe('pointsFor', () => {
   it('不正解・時間切れは 0pt', () => {

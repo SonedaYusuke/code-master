@@ -7,9 +7,13 @@ type StorageLike = Pick<Storage, 'getItem' | 'setItem'>;
 
 /** レベル構成を見直すたびにバージョンを上げて、以前の記録をリセットする */
 export const STORAGE_KEY = 'code-master:progress:v4';
-const BUILD_STORAGE_KEY = 'code-master:progress:build:v1';
+const MODE_STORAGE_KEYS: Record<QuizMode, string> = {
+  choice: STORAGE_KEY,
+  build: 'code-master:progress:build:v1',
+  shape: 'code-master:progress:shape:v1',
+};
 
-const keyFor = (mode: QuizMode) => (mode === 'build' ? BUILD_STORAGE_KEY : STORAGE_KEY);
+const keyFor = (mode: QuizMode) => MODE_STORAGE_KEYS[mode];
 export const CLEAR_THRESHOLD = 80;
 
 function defaultStorage(): StorageLike | null {
