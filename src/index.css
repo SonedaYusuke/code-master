@@ -123,8 +123,17 @@ a { color: var(--text); }
   background: var(--bg);
   border-bottom: var(--border);
 }
-.root-nav, .type-filter { display: flex; flex-wrap: wrap; gap: 8px; }
-.type-filter { margin-top: 10px; }
+/* ルートとタイプは折り返さず横スクロール。下と右の余白は影が切れないようにするため */
+.root-nav, .type-filter {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 0 4px 6px 0;
+  scrollbar-width: thin;
+}
+.root-nav > *, .type-filter > * { flex-shrink: 0; white-space: nowrap; }
+.type-filter { margin-top: 6px; }
 .root-nav .button { padding: 6px 12px; min-width: 48px; box-shadow: 3px 3px 0 var(--ink); }
 .chip {
   padding: 4px 14px;
