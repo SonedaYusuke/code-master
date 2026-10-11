@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import type { Level } from '../model';
 import { LEVEL_INFO } from '../data/chords';
 import { MODE_LABELS, type QuizResult } from '../lib/quiz';
+import { maxPointsFor } from '../lib/scoring';
 import { formatRoute } from '../lib/route';
 import { navigate } from '../router';
 import ChordCard from '../components/ChordCard';
@@ -29,6 +30,7 @@ export default function Result({ level, result }: Props) {
         description={LEVEL_INFO[level].description}
         heading={MODE_LABELS[result.mode]}
         points={result.points}
+        maxPoints={maxPointsFor(result.total)}
         newHighScore={result.newHighScore}
         stats={[
           { label: '正解', value: `${result.correct} / ${result.total}` },

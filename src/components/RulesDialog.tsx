@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { MAX_LIVES, MAX_QUESTIONS } from '../lib/challenge';
 import { QUESTION_COUNT } from '../lib/quiz';
-import { BASE_POINTS, COMBO_STEP, MAX_COMBO_BONUS, MAX_TIME_BONUS, TIME_LIMIT_MS } from '../lib/scoring';
+import { BASE_POINTS, COMBO_STEP, MAX_COMBO_BONUS, MAX_TIME_BONUS, RANKS, TIME_LIMIT_MS, maxPointsFor } from '../lib/scoring';
 
 type Props = { open: boolean; onClose: () => void };
 
@@ -36,6 +36,16 @@ export default function RulesDialog({ open, onClose }: Props) {
           <li>コンボボーナス: 2問連続正解から1問ごとに +{COMBO_STEP}pt（最大 {MAX_COMBO_BONUS}pt）</li>
         </ul>
         <p className="muted">不正解か時間切れは 0pt で、コンボも途切れます。</p>
+        <h3>称号</h3>
+        <p className="muted">
+          理論値（レベルのクイズは {maxPointsFor(QUESTION_COUNT).toLocaleString('ja-JP')}pt、チャレンジモードは{' '}
+          {maxPointsFor(MAX_QUESTIONS).toLocaleString('ja-JP')}pt）に対する割合で決まります。
+        </p>
+        <ul>
+          {RANKS.map((rank) => (
+            <li key={rank.name}>{rank.min}% 以上: {rank.name}</li>
+          ))}
+        </ul>
         <h3>レベルのクイズ</h3>
         <ul>
           <li>{QUESTION_COUNT} 問出題</li>

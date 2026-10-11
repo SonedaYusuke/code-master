@@ -13,7 +13,7 @@ import {
 import { challengeRecordKey, loadChallengeBest, saveChallengeResult, selectionKey } from '../lib/challengeRecord';
 import { buildQuestion } from '../lib/buildQuestion';
 import { MODE_LABELS, type QuizMode } from '../lib/quiz';
-import { pointsFor, timeLimitFor } from '../lib/scoring';
+import { maxPointsFor, pointsFor, timeLimitFor } from '../lib/scoring';
 import { formatRoute } from '../lib/route';
 import ChordDiagram from '../components/ChordDiagram';
 import TimerBar from '../components/TimerBar';
@@ -80,6 +80,7 @@ export default function Challenge() {
           description={`${MODE_LABELS[mode]} / 出題コード: ${selectionKey(types)}`}
           heading={summary.completed ? '完走' : 'ゲームオーバー'}
           points={summary.points}
+          maxPoints={maxPointsFor(MAX_QUESTIONS)}
           newHighScore={summary.newHighScore}
           stats={[
             { label: '正解', value: `${summary.correct} / ${summary.answered}` },

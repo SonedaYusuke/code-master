@@ -22,3 +22,24 @@ export function pointsFor(correct: boolean, remainingMs: number, combo: number, 
   const comboBonus = Math.min(Math.max(combo - 1, 0) * COMBO_STEP, MAX_COMBO_BONUS);
   return BASE_POINTS + timeBonus + comboBonus;
 }
+
+/** questionCount 問を、すべて一瞬で正解したときの理論値 */
+export function maxPointsFor(questionCount: number): number {
+  let total = 0;
+  for (let combo = 1; combo <= questionCount; combo++) total += pointsFor(true, TIME_LIMIT_MS, combo);
+  return total;
+}
+
+/** 称号。理論値に対する割合（%）が min 以上ならその称号。低い順 */
+export const RANKS = [
+  { min: 0, name: 'ギター初心者' },
+  { min: 20, name: 'ギター見習い' },
+  { min: 40, name: '駆け出しバンドマン' },
+  { min: 60, name: '売れっ子ギタリスト' },
+  { min: 80, name: 'ギターヒーロー' },
+] as const;
+
+export function rankFor(points: number, maxPoints: number): string {
+  const percent = maxPoints === 0 ? 0 : (points / maxPoints) * 100;
+  return [...RANKS].reverse().find((rank) => percent >= rank.min)!.name;
+}

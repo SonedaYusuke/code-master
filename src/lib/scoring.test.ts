@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { TIME_LIMIT_MS, pointsFor, timeLimitFor } from './scoring';
+import { TIME_LIMIT_MS, maxPointsFor, pointsFor, rankFor, timeLimitFor } from './scoring';
 
 describe('timeLimitFor', () => {
   it('4択と形を選ぶは10秒、ルート＋タイプも10秒', () => {
@@ -40,5 +40,24 @@ describe('pointsFor', () => {
   it('範囲外の残り時間は 0〜制限時間に丸める', () => {
     expect(pointsFor(true, -500, 1)).toBe(100);
     expect(pointsFor(true, TIME_LIMIT_MS * 2, 1)).toBe(200);
+  });
+});
+
+describe('maxPointsFor', () => {
+  it('レベルのクイズ（10問）は 2,700pt、チャレンジ（100問）は 29,700pt', () => {
+    expect(maxPointsFor(10)).toBe(2700);
+    expect(maxPointsFor(100)).toBe(29700);
+  });
+});
+
+describe('rankFor', () => {
+  it('理論値に対する割合で、20% ごとに称号が上がる', () => {
+    expect(rankFor(0, 1000)).toBe('ギター初心者');
+    expect(rankFor(199, 1000)).toBe('ギター初心者');
+    expect(rankFor(200, 1000)).toBe('ギター見習い');
+    expect(rankFor(400, 1000)).toBe('駆け出しバンドマン');
+    expect(rankFor(600, 1000)).toBe('売れっ子ギタリスト');
+    expect(rankFor(800, 1000)).toBe('ギターヒーロー');
+    expect(rankFor(1000, 1000)).toBe('ギターヒーロー');
   });
 });

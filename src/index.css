@@ -369,6 +369,8 @@ a { color: var(--text); }
 .high-score { background: var(--red); }
 .result-points { margin: 8px 0 4px; font-size: 3.4rem; font-weight: 800; line-height: 1.1; }
 .result-points-unit { margin-left: 6px; font-size: 1.4rem; }
+.result-rank { margin: 0; font-weight: 700; }
+.result-rank strong { font-size: 1.3rem; font-weight: 800; color: var(--pink-text); }
 /* タイルの数に合わせて等分する */
 .result-stats { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 10px; margin: 16px 0 0; }
 .result-stat {
