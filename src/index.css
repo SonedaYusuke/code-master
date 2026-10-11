@@ -1,0 +1,103 @@
+:root {
+  --bg: #faf8f5;
+  --surface: #ffffff;
+  --text: #2b2b2b;
+  --muted: #6b6b6b;
+  --accent: #c0612b;
+  --accent-text: #ffffff;
+  --line: #d9d4cc;
+  --correct: #2f8f5b;
+  --wrong: #c43d3d;
+  font-family: system-ui, -apple-system, "Hiragino Sans", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1c1b1a;
+    --surface: #262422;
+    --text: #ece8e2;
+    --muted: #a39d94;
+    --accent: #e38550;
+    --accent-text: #1c1b1a;
+    --line: #4a4641;
+    --correct: #5cc28a;
+    --wrong: #ef6b6b;
+  }
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); }
+.page { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: 1.6rem; margin: 0 0 8px; }
+h2 { font-size: 1.15rem; margin: 0 0 8px; }
+p { margin: 4px 0; }
+a { color: var(--accent); }
+.muted { color: var(--muted); }
+.back { display: inline-block; margin-bottom: 16px; }
+
+.button {
+  display: inline-block;
+  padding: 10px 18px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-text);
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.button.secondary { background: transparent; color: var(--accent); }
+.button:disabled { opacity: 0.5; cursor: default; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+.level-grid, .chord-grid {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+.level-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.chord-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+.level-card, .chord-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+.chord-card { text-align: center; }
+.badge {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--correct);
+  color: var(--bg);
+  font-size: 0.8rem;
+}
+
+.chord-diagram { width: 100%; max-width: 180px; height: auto; display: block; margin: 0 auto; }
+.chord-diagram .fret, .chord-diagram .string { stroke: var(--muted); stroke-width: 1; }
+.chord-diagram .nut { stroke: var(--text); stroke-width: 4; }
+.chord-diagram .dot, .chord-diagram .barre { fill: var(--text); }
+.chord-diagram .finger { fill: var(--bg); font-size: 11px; font-weight: bold; }
+.chord-diagram .marker, .chord-diagram .base-fret { fill: var(--muted); font-size: 12px; }
+.chord-diagram .note { fill: var(--accent); font-size: 12px; font-weight: bold; }
+
+.quiz { max-width: 480px; margin: 0 auto; text-align: center; }
+.choices { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+.choice {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+.choice.correct { border-color: var(--correct); background: var(--correct); color: var(--bg); }
+.choice.wrong { border-color: var(--wrong); background: var(--wrong); color: var(--bg); }
+.feedback { margin-top: 16px; font-weight: bold; }
+.feedback.correct { color: var(--correct); }
+.feedback.wrong { color: var(--wrong); }
+.score { font-size: 2.4rem; font-weight: bold; margin: 8px 0; }
