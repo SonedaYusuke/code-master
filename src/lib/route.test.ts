@@ -14,7 +14,7 @@ describe('parseRoute', () => {
     expect(parseRoute(hash)).toEqual(expected);
   });
 
-  it.each(['', '#', '#/', '#/foo', '#/level/0/quiz', '#/level/10/quiz', '#/level/abc/study', '#/level/1/play', '#/level/1/quiz/extra', '#/chart/C'])(
+  it.each(['', '#', '#/', '#/foo', '#/level/0/quiz', '#/level/9/quiz', '#/level/abc/study', '#/level/1/play', '#/level/1/quiz/extra', '#/chart/C'])(
     '%s はホームになる',
     (hash) => {
       expect(parseRoute(hash)).toEqual({ page: 'home' });
